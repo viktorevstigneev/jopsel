@@ -73,7 +73,7 @@ const config = {
     },
     {
       trigger: "Илья",
-      response: "воздух гоняет ваш Илья",
+      response: "ростом в три хуя",
       needMention: false,
     },
     {
