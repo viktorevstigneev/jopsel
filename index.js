@@ -49,8 +49,8 @@ const config = {
 
     // Команды, которые работают ТОЛЬКО с упоминанием жопсель
     { trigger: "нароод", response: "хуй те в рот", needMention: false },
-    { trigger: "наррод", response: "хуй те в рот", needMention: false },
-    { trigger: "народ", response: "Зхуй те в рот", needMention: false },
+    { trigger: "наррод", response: "2 хуя те в рот", needMention: false },
+    { trigger: "народ", response: "З хуя те в рот", needMention: false },
     {
       trigger: "как дела",
       response: "У Жопселя всё отлично! А у вас? 🐶",
@@ -58,22 +58,97 @@ const config = {
     },
     {
       trigger: "спокойной ночи",
-      response: "Сладких снов, друзья! 🌙",
+      response: "сьебись уже",
       needMention: false,
     },
     {
       trigger: "молодец",
-      response: "Спасибо, я стараюсь! 🥰",
+      response: "ясен хуй",
       needMention: false,
     },
     {
       trigger: "кто тут",
-      response: "Жопсель тут! Самый лучший бот в этом чате 😎",
+      response: "Жопсель тут",
+      needMention: false,
+    },
+    {
+      trigger: "Илья",
+      response: "воздух гоняет ваш Илья",
+      needMention: false,
+    },
+    {
+      trigger: "Даша",
+      response: "дохуя наша",
+      needMention: false,
+    },
+    {
+      trigger: "Воздухан",
+      response: "Воздухан твой батя",
+      needMention: false,
+    },
+    {
+      trigger: "соси",
+      response: "а ты научи сосать",
+      needMention: false,
+    },
+    {
+      trigger: "сучка",
+      response: "сучка в постели будешь кричать",
+      needMention: false,
+    },
+    {
+      trigger: "домой",
+      response: "блять ты ж бездомное, чудо",
+      needMention: false,
+    },
+    {
+      trigger: "поел",
+      response: "говна?",
+      needMention: false,
+    },
+    {
+      trigger: "наелся",
+      response: "говна?",
+      needMention: false,
+    },
+    {
+      trigger: "наелась",
+      response: "говна?",
+      needMention: false,
+    },
+    {
+      trigger: "похуй",
+      response: "по хуй ты будешь на коленях стоять",
+      needMention: false,
+    },
+    {
+      trigger: "первый",
+      response: "первый не последний, соси сразу два",
+      needMention: false,
+    },
+    {
+      trigger: "плохо",
+      response: "плохо когда сын на соседа похож",
+      needMention: false,
+    },
+    {
+      trigger: "ок",
+      response: "хуёк",
+      needMention: false,
+    },
+    {
+      trigger: "да",
+      response: "пизда",
+      needMention: false,
+    },
+    {
+      trigger: "я",
+      response: "головка от хуя",
       needMention: false,
     },
   ],
 
-  defaultResponse: "Чё надо? 😏",
+  defaultResponse: "Чё надо?",
 
   welcomeMessage: `
 🐶 *Привет! Я Жопсель!*
