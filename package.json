@@ -1,0 +1,12 @@
+{
+  "name": "zhopsel-bot",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "gramio": "^0.9.0"
+  }
+}
