@@ -12,45 +12,76 @@ const config = {
 
   nameAliases: ["жопсель", "жопселя", "жопселю", "жопселем", "жопселе"],
 
-  goodMorningTriggers: [
-    "доброе утро",
-    "доброе утречко",
-    "с добрым утром",
-    "утречка",
-    "доброе утро всем",
-    "всем доброе утро",
-  ],
+  // ========== НОВАЯ СИСТЕМА КОМАНД ==========
+  // Каждая команда: trigger - что искать, response - что ответить, needMention - нужно ли имя бота
+  commands: [
+    // Команды, которые работают БЕЗ упоминания жопсель
+    {
+      trigger: "доброе утро",
+      response: "какое нахуй утро",
+      needMention: false,
+    },
+    {
+      trigger: "доброе утречко",
+      response: "соси",
+      needMention: false,
+    },
+    {
+      trigger: "с добрым утром",
+      response: "биба и боба",
+      needMention: false,
+    },
+    {
+      trigger: "утречка",
+      response: "додик ты утренний",
+      needMention: false,
+    },
+    {
+      trigger: "доброе утро всем",
+      response: "добрым утро не бывает",
+      needMention: false,
+    },
+    {
+      trigger: "всем доброе утро",
+      response: "миру мир а тебе хуй в рот",
+      needMention: false,
+    },
 
-  goodMorningResponses: [
-    "🌅 Доброе утро! Отличного дня всем!",
-    "☕ Доброе утречко! Чай/кофе уже заварили?",
-    "🌟 С добрым утром! Пусть день будет продуктивным!",
-    "🐶 Гав! Доброе утро от Жопселя!",
+    // Команды, которые работают ТОЛЬКО с упоминанием жопсель
+    { trigger: "нароод", response: "хуй те в рот", needMention: false },
+    { trigger: "наррод", response: "хуй те в рот", needMention: false },
+    { trigger: "народ", response: "Зхуй те в рот", needMention: false },
+    {
+      trigger: "как дела",
+      response: "У Жопселя всё отлично! А у вас? 🐶",
+      needMention: true,
+    },
+    {
+      trigger: "спокойной ночи",
+      response: "Сладких снов, друзья! 🌙",
+      needMention: false,
+    },
+    {
+      trigger: "молодец",
+      response: "Спасибо, я стараюсь! 🥰",
+      needMention: false,
+    },
+    {
+      trigger: "кто тут",
+      response: "Жопсель тут! Самый лучший бот в этом чате 😎",
+      needMention: false,
+    },
   ],
-
-  customCommands: {
-    нароод: "Йооо, народ! 👋",
-    народ: "Здарова, пацаны! 🤘",
-    "как дела": "У Жопселя всё отлично! А у вас? 🐶",
-    "спокойной ночи": "Сладких снов, друзья! 🌙",
-  },
 
   defaultResponse: "Чё надо? 😏",
 
   welcomeMessage: `
 🐶 *Привет! Я Жопсель!*
-
-*Что я умею:*
-🌅 доброе утро — пожелаю хорошего дня
-👋 нароод / народ — поздороваюсь
-
-*Научи меня новому:* 
-жопсель запомни: фраза -> ответ
-    `,
+`,
 };
 
-// Хранилище выученных команд (копируем из конфига)
-let customCommands = { ...config.customCommands };
+// Выученные команды (изначально пустые, будут добавляться через запомни)
+let learnedCommands = [];
 
 // ========== ФУНКЦИИ ==========
 function isBotMentioned(text) {
@@ -63,24 +94,28 @@ function isBotMentioned(text) {
   return false;
 }
 
-function isGoodMorning(text) {
+// Проверка всех команд (и встроенных, и выученных)
+function checkAllCommands(text) {
   const lowerText = text.toLowerCase();
-  return config.goodMorningTriggers.some((trigger) =>
-    lowerText.includes(trigger),
-  );
-}
+  const botMentioned = isBotMentioned(text);
 
-function getRandomGoodMorning() {
-  return config.goodMorningResponses[
-    Math.floor(Math.random() * config.goodMorningResponses.length)
-  ];
-}
-
-function checkCustomCommand(text) {
-  const lowerText = text.toLowerCase();
-  for (const [trigger, response] of Object.entries(customCommands)) {
-    if (lowerText.includes(trigger)) return response;
+  // Проверяем встроенные команды из конфига
+  for (const cmd of config.commands) {
+    if (lowerText.includes(cmd.trigger)) {
+      // Если команда требует упоминания — проверяем, упомянут ли бот
+      if (cmd.needMention && !botMentioned) continue;
+      return cmd.response;
+    }
   }
+
+  // Проверяем выученные команды
+  for (const cmd of learnedCommands) {
+    if (lowerText.includes(cmd.trigger)) {
+      if (cmd.needMention && !botMentioned) continue;
+      return cmd.response;
+    }
+  }
+
   return null;
 }
 
@@ -90,7 +125,6 @@ bot.on("message", async (msg) => {
   const text = msg.text;
 
   if (!text) return;
-  if (!isBotMentioned(text)) return;
 
   console.log(`[Жопсель] ${text}`);
 
@@ -99,58 +133,73 @@ bot.on("message", async (msg) => {
     const parts = text.split("->");
     if (parts.length === 2) {
       let trigger = parts[0].replace("запомни:", "").trim().toLowerCase();
-      const response = parts[1].trim();
+      let response = parts[1].trim();
 
-      // Убираем имя бота из триггера если есть
+      // Проверяем, нужно ли упоминание для этой команды
+      let needMention = true;
       if (trigger.startsWith(config.botName)) {
         trigger = trigger.slice(config.botName.length).trim();
+        needMention = true;
+      }
+      // Если в запросе есть "без имени" — команда без упоминания
+      if (text.includes("без имени")) {
+        needMention = false;
       }
 
       if (trigger && response) {
-        customCommands[trigger] = response;
+        learnedCommands.push({ trigger, response, needMention });
         await bot.sendMessage(
           chatId,
-          `✅ Запомнил! На "${trigger}" отвечаю "${response}"`,
+          `✅ Запомнил! На "${trigger}" отвечаю "${response}"${needMention ? " (нужно упоминать жопсель)" : " (можно без упоминания)"}`,
         );
         return;
       }
     }
   }
 
-  // 2. Доброе утро
-  if (isGoodMorning(text)) {
-    await bot.sendMessage(chatId, getRandomGoodMorning());
+  // 2. Проверяем все команды из конфига и выученные
+  const commandResponse = checkAllCommands(text);
+  if (commandResponse) {
+    await bot.sendMessage(chatId, commandResponse);
     return;
   }
 
-  // 3. Кастомные команды
-  const customResponse = checkCustomCommand(text);
-  if (customResponse) {
-    await bot.sendMessage(chatId, customResponse);
-    return;
-  }
-
-  // 4. Просто позвали по имени
+  // 3. Просто позвали по имени
   const cleanText = text.toLowerCase().trim();
   if (cleanText === config.botName || cleanText === `${config.botName}?`) {
     await bot.sendMessage(chatId, "Чё? 😼");
     return;
   }
 
-  // 5. Список команд
+  // 4. Список команд
   if (cleanText.includes("список команд")) {
-    const list = Object.entries(customCommands)
-      .slice(0, 20)
-      .map(([t, r]) => `• ${t} → ${r}`)
+    const builtinList = config.commands
+      .map(
+        (cmd) =>
+          `• ${cmd.trigger} → ${cmd.response.substring(0, 30)}... ${cmd.needMention ? "(жопсель)" : "(без имени)"}`,
+      )
       .join("\n");
-    await bot.sendMessage(chatId, `📚 *Команды:*\n${list || "Пока нет"}`, {
-      parse_mode: "Markdown",
-    });
+    const learnedList = learnedCommands
+      .map(
+        (cmd) =>
+          `• ${cmd.trigger} → ${cmd.response} ${cmd.needMention ? "(жопсель)" : "(без имени)"}`,
+      )
+      .join("\n");
+
+    await bot.sendMessage(
+      chatId,
+      `📚 *Команды:*\n\n*Встроенные:*\n${builtinList}\n\n*Выученные:*\n${learnedList || "пока нет"}`,
+      {
+        parse_mode: "Markdown",
+      },
+    );
     return;
   }
 
-  // 6. Ответ по умолчанию
-  await bot.sendMessage(chatId, config.defaultResponse);
+  // 5. Ответ по умолчанию — только если упомянули бота
+  if (isBotMentioned(text)) {
+    await bot.sendMessage(chatId, config.defaultResponse);
+  }
 });
 
 // ========== КОМАНДЫ ==========
@@ -161,7 +210,14 @@ bot.onText(/\/start/, (msg) => {
 });
 
 bot.onText(/\/help/, (msg) => {
-  bot.sendMessage(msg.chat.id, '📖 Напиши "жопсель помощь" или /start');
+  bot.sendMessage(
+    msg.chat.id,
+    '📖 Напиши "жопсель список команд" чтобы увидеть все команды',
+  );
 });
 
 console.log("🐶 Жопсель запущен!");
+console.log(
+  "👋 Команды без упоминания: доброе утро, доброе утречко, с добрым утром, утречка",
+);
+console.log("🔧 Команды с упоминанием: всё остальное");
