@@ -200,10 +200,28 @@
       "exactMatch": false
     },
     {
+      "trigger": "женя",
+      "response": "у тебя две жизни или что нахуй? сейчас останется оплатить только комуналку",
+      "needMention": false,
+      "exactMatch": false
+    },
+    {
       "trigger": "диана",
       "response": "что диана блять, бабки верните ей за посиделки",
       "needMention": false,
       "exactMatch": false
+    },
+    {
+      "trigger": "влад",
+      "response": "влат пора пивка то уебат",
+      "needMention": false,
+      "exactMatch": false
+    },
+    {
+      "trigger": "тема",
+      "response": "важно чтобы всегда мы оставались мыми,а они оними",
+      "needMention": true,
+      "exactMatch": true
     }
   ]
 }
