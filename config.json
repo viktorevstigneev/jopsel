@@ -155,12 +155,6 @@
       "response": "плохо когда сын на соседа похож",
       "needMention": false,
       "exactMatch": false
-    },
-    {
-      "trigger": "ок",
-      "response": "хуёк",
-      "needMention": false,
-      "exactMatch": false
     }
   ]
 }
