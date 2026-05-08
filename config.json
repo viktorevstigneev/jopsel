@@ -1,0 +1,166 @@
+{
+  "botToken": "8299226870:AAEKmJUrga6Vf67BAxZctbrPGn2M9ToXOxc",
+  "adminId": 804419469,
+  "botName": "жопсель",
+  "nameAliases": ["жопсель", "жопселя", "жопселю", "жопселем", "жопселе"],
+  "defaultResponse": "Чё надо?",
+  "welcomeMessage": "🐶 *Привет! Я Жопсель!*",
+  "commands": [
+    {
+      "trigger": "доброе утро",
+      "response": "какое нахуй утро",
+      "needMention": false,
+      "exactMatch": true
+    },
+    {
+      "trigger": "доброе утречко",
+      "response": "соси",
+      "needMention": false,
+      "exactMatch": true
+    },
+    {
+      "trigger": "с добрым утром",
+      "response": "биба и боба",
+      "needMention": false,
+      "exactMatch": true
+    },
+    {
+      "trigger": "утречка",
+      "response": "додик ты утренний",
+      "needMention": false,
+      "exactMatch": true
+    },
+    {
+      "trigger": "доброе утро всем",
+      "response": "добрым утро не бывает",
+      "needMention": false,
+      "exactMatch": true
+    },
+    {
+      "trigger": "всем доброе утро",
+      "response": "миру мир а тебе хуй в рот",
+      "needMention": false,
+      "exactMatch": true
+    },
+    {
+      "trigger": "нароод",
+      "response": "хуй те в рот",
+      "needMention": false,
+      "exactMatch": true
+    },
+    {
+      "trigger": "наррод",
+      "response": "2 хуя те в рот",
+      "needMention": false,
+      "exactMatch": true
+    },
+    {
+      "trigger": "народ",
+      "response": "3 хуя те в рот",
+      "needMention": false,
+      "exactMatch": true
+    },
+    {
+      "trigger": "как дела",
+      "response": "У Жопселя всё отлично! А у вас? 🐶",
+      "needMention": true,
+      "exactMatch": true
+    },
+    {
+      "trigger": "спокойной ночи",
+      "response": "сьебись уже",
+      "needMention": false,
+      "exactMatch": true
+    },
+    {
+      "trigger": "молодец",
+      "response": "ясен хуй",
+      "needMention": false,
+      "exactMatch": true
+    },
+    {
+      "trigger": "кто тут",
+      "response": "Жопсель тут",
+      "needMention": false,
+      "exactMatch": true
+    },
+    {
+      "trigger": "Илья",
+      "response": "ростом в три хуя",
+      "needMention": false,
+      "exactMatch": true
+    },
+    {
+      "trigger": "Даша",
+      "response": "дохуя наша",
+      "needMention": false,
+      "exactMatch": true
+    },
+    {
+      "trigger": "Воздухан",
+      "response": "Воздухан твой батя",
+      "needMention": false,
+      "exactMatch": true
+    },
+    {
+      "trigger": "соси",
+      "response": "а ты научи сосать",
+      "needMention": false,
+      "exactMatch": true
+    },
+    {
+      "trigger": "сучка",
+      "response": "сучка в постели будешь кричать",
+      "needMention": false,
+      "exactMatch": true
+    },
+    {
+      "trigger": "домой",
+      "response": "блять ты ж бездомное, чудо",
+      "needMention": false,
+      "exactMatch": true
+    },
+    {
+      "trigger": "поел",
+      "response": "говна?",
+      "needMention": false,
+      "exactMatch": true
+    },
+    {
+      "trigger": "наелся",
+      "response": "говна?",
+      "needMention": false,
+      "exactMatch": true
+    },
+    {
+      "trigger": "наелась",
+      "response": "говна?",
+      "needMention": false,
+      "exactMatch": true
+    },
+    {
+      "trigger": "похуй",
+      "response": "по хуй ты будешь на коленях стоять",
+      "needMention": false,
+      "exactMatch": true
+    },
+    {
+      "trigger": "первый",
+      "response": "первый не последний, соси сразу два",
+      "needMention": false,
+      "exactMatch": true
+    },
+    {
+      "trigger": "плохо",
+      "response": "плохо когда сын на соседа похож",
+      "needMention": false,
+      "exactMatch": true
+    },
+    {
+      "trigger": "ок",
+      "response": "хуёк",
+      "needMention": false,
+      "exactMatch": true
+    }
+  ]
+}
