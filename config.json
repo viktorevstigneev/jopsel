@@ -228,6 +228,18 @@
       "response": "дрисня ирисня в прошлом, © Виктор тайлер дерден",
       "needMention": false,
       "exactMatch": false
+    },
+    {
+      "trigger": "женька",
+      "responses": [
+        "хуе жменька",
+        "отдастся за печеньку",
+        "хуй совсем не карамелька",
+        "сутенер",
+        "хуйня"
+      ],
+      "needMention": false,
+      "exactMatch": false
     }
   ]
 }
