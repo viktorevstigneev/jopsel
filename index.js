@@ -130,14 +130,24 @@ function checkAllCommands(text) {
         console.log(`  ❌ Нужно упоминание, но его нет`);
         continue;
       }
-      console.log(`  📢 ОТВЕТ: ${cmd.response}`);
-      return cmd.response;
+
+      // Проверяем, есть ли массив responses
+      let response;
+      if (cmd.randomResponse && cmd.responses && Array.isArray(cmd.responses)) {
+        response =
+          cmd.responses[Math.floor(Math.random() * cmd.responses.length)];
+        console.log(`  🎲 Рандомный ответ: ${response}`);
+      } else {
+        response = cmd.response;
+      }
+
+      console.log(`  📢 ОТВЕТ: ${response}`);
+      return response;
     }
   }
 
   return null;
 }
-
 async function handleMessage(msg) {
   const chatId = msg.chat.id;
   const userId = msg.from.id;

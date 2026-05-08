@@ -158,9 +158,16 @@
     },
     {
       "trigger": "лиза",
-      "response": "это та которая с сиськами?",
+      "responses": [
+        "это та которая с сиськами?",
+        "сиськастая?",
+        "подожди подожди подожди, это с бидонами?",
+        "че вы доебались к елизольдовне нашей",
+        "лиза извини                сь"
+      ],
       "needMention": false,
-      "exactMatch": false
+      "exactMatch": false,
+      "randomResponse": true
     },
     {
       "trigger": "душно",
@@ -183,6 +190,18 @@
     {
       "trigger": "нет",
       "response": "говна пакет",
+      "needMention": false,
+      "exactMatch": false
+    },
+    {
+      "trigger": "евгений",
+      "response": "нахуя ты добавила эти две буквы в начале блять, просто Гений, филантроп, милиардер, иди нахуй в общем",
+      "needMention": false,
+      "exactMatch": false
+    },
+    {
+      "trigger": "диана",
+      "response": "что диана блять, бабки верните ей за посиделки",
       "needMention": false,
       "exactMatch": false
     }
