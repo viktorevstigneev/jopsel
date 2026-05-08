@@ -155,6 +155,36 @@
       "response": "плохо когда сын на соседа похож",
       "needMention": false,
       "exactMatch": false
+    },
+    {
+      "trigger": "лиза",
+      "response": "это та которая с сиськами?",
+      "needMention": false,
+      "exactMatch": false
+    },
+    {
+      "trigger": "душно",
+      "response": "дущно когда ты в чате еблан",
+      "needMention": false,
+      "exactMatch": false
+    },
+    {
+      "trigger": "мои",
+      "response": "рабу слова не давали",
+      "needMention": false,
+      "exactMatch": false
+    },
+    {
+      "trigger": "приезжай",
+      "response": "ооой блять сиди уже не вылезай",
+      "needMention": false,
+      "exactMatch": false
+    },
+    {
+      "trigger": "нет",
+      "response": "говна пакет",
+      "needMention": false,
+      "exactMatch": false
     }
   ]
 }
