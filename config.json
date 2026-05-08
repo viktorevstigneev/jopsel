@@ -85,19 +85,19 @@
       "exactMatch": false
     },
     {
-      "trigger": "Илья",
+      "trigger": "илья",
       "response": "ростом в три хуя",
       "needMention": false,
       "exactMatch": true
     },
     {
-      "trigger": "Даша",
+      "trigger": "даша",
       "response": "дохуя наша",
       "needMention": false,
       "exactMatch": true
     },
     {
-      "trigger": "Воздухан",
+      "trigger": "воздухан",
       "response": "Воздухан твой батя",
       "needMention": false,
       "exactMatch": true
