@@ -76,13 +76,13 @@
       "trigger": "молодец",
       "response": "ясен хуй",
       "needMention": false,
-      "exactMatch": true
+      "exactMatch": false
     },
     {
       "trigger": "кто тут",
       "response": "Жопсель тут",
       "needMention": false,
-      "exactMatch": true
+      "exactMatch": false
     },
     {
       "trigger": "Илья",
@@ -106,61 +106,61 @@
       "trigger": "соси",
       "response": "а ты научи сосать",
       "needMention": false,
-      "exactMatch": true
+      "exactMatch": false
     },
     {
       "trigger": "сучка",
       "response": "сучка в постели будешь кричать",
       "needMention": false,
-      "exactMatch": true
+      "exactMatch": false
     },
     {
       "trigger": "домой",
       "response": "блять ты ж бездомное, чудо",
       "needMention": false,
-      "exactMatch": true
+      "exactMatch": false
     },
     {
       "trigger": "поел",
       "response": "говна?",
       "needMention": false,
-      "exactMatch": true
+      "exactMatch": false
     },
     {
       "trigger": "наелся",
       "response": "говна?",
       "needMention": false,
-      "exactMatch": true
+      "exactMatch": false
     },
     {
       "trigger": "наелась",
       "response": "говна?",
       "needMention": false,
-      "exactMatch": true
+      "exactMatch": false
     },
     {
       "trigger": "похуй",
       "response": "по хуй ты будешь на коленях стоять",
       "needMention": false,
-      "exactMatch": true
+      "exactMatch": false
     },
     {
       "trigger": "первый",
       "response": "первый не последний, соси сразу два",
       "needMention": false,
-      "exactMatch": true
+      "exactMatch": false
     },
     {
       "trigger": "плохо",
       "response": "плохо когда сын на соседа похож",
       "needMention": false,
-      "exactMatch": true
+      "exactMatch": false
     },
     {
       "trigger": "ок",
       "response": "хуёк",
       "needMention": false,
-      "exactMatch": true
+      "exactMatch": false
     }
   ]
 }
