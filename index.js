@@ -21,6 +21,34 @@ const bot = new TelegramBot(TOKEN, { webHook: { autoOpen: false } });
 const app = express();
 app.use(express.json());
 
+// ========== РАНДОМНЫЕ ОТВЕТЫ ДЛЯ РАЗНЫХ ПОЛЬЗОВАТЕЛЕЙ ==========
+const adminResponses = [
+  "да, хозяин 👑",
+  "да, мой господин 🐶",
+  "да, мой повелитель 👑",
+  "да, создатель 🎯",
+  "слушаюсь, хозяин 🫡",
+  "чего изволите, господин? 🐶",
+  "я здесь, повелитель 👑",
+  "что прикажете, создатель? 🎯",
+];
+
+const userResponses = [
+  "лох педальный, чё надо? 🖕",
+  "чё доебался? 🖕",
+  "нахуй ты меня трогаешь? 🖕",
+  "отвали, чмо 🖕",
+  "руки убрал, петушара 🖕",
+  "иди нахуй 🖕",
+  "че надо, быдло? 🖕",
+  "не трогай меня, дебил 🖕",
+];
+
+function getRandomResponse(isAdmin) {
+  const responses = isAdmin ? adminResponses : userResponses;
+  return responses[Math.floor(Math.random() * responses.length)];
+}
+
 let learnedCommands = [];
 const LEARNED_FILE = "learned_commands.json";
 
@@ -65,13 +93,11 @@ function checkAllCommands(text) {
   let cleanText = text.toLowerCase().trim();
   const botMentioned = isBotMentioned(text);
 
-  // Убираем имя бота из текста для проверки команд
   if (botMentioned) {
     cleanText = cleanText.replace(config.botName, "").trim();
     for (const alias of config.nameAliases) {
       cleanText = cleanText.replace(alias, "").trim();
     }
-    // Убираем множественные пробелы
     cleanText = cleanText.replace(/\s+/g, " ").trim();
   }
 
@@ -232,10 +258,11 @@ async function handleMessage(msg) {
     return;
   }
 
-  // ПОЗВАЛИ ПО ИМЕНИ
+  // ПОЗВАЛИ ПО ИМЕНИ (с разными ответами для админа и пользователей)
   const cleanText = text.toLowerCase().trim();
   if (cleanText === config.botName || cleanText === `${config.botName}?`) {
-    await bot.sendMessage(chatId, "Чё? 😼");
+    const response = getRandomResponse(isAdmin(userId));
+    await bot.sendMessage(chatId, response);
     return;
   }
 
@@ -250,9 +277,11 @@ async function handleMessage(msg) {
     return;
   }
 
-  // ОТВЕТ ПО УМОЛЧАНИЮ
+  // ОТВЕТ ПО УМОЛЧАНИЮ (с разными ответами для админа и пользователей)
   if (isBotMentioned(text)) {
-    await bot.sendMessage(chatId, config.defaultResponse);
+    const response = getRandomResponse(isAdmin(userId));
+    await bot.sendMessage(chatId, response);
+    return;
   }
 }
 
