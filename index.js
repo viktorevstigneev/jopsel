@@ -21,7 +21,6 @@ const bot = new TelegramBot(TOKEN, { webHook: { autoOpen: false } });
 const app = express();
 app.use(express.json());
 
-// Выученные команды (сохраняются отдельно)
 let learnedCommands = [];
 const LEARNED_FILE = "learned_commands.json";
 
@@ -35,7 +34,6 @@ function loadLearnedCommands() {
       const data = fs.readFileSync(LEARNED_FILE, "utf8");
       learnedCommands = JSON.parse(data);
       console.log(`📚 Загружено ${learnedCommands.length} выученных команд`);
-      console.log(JSON.stringify(learnedCommands, null, 2));
     }
   } catch (error) {
     console.error("Ошибка загрузки learned:", error);
@@ -64,40 +62,46 @@ function isBotMentioned(text) {
 function checkAllCommands(text) {
   if (!text) return null;
 
-  const lowerText = text.toLowerCase().trim();
+  let cleanText = text.toLowerCase().trim();
   const botMentioned = isBotMentioned(text);
+
+  // Убираем имя бота из текста для проверки команд
+  if (botMentioned) {
+    cleanText = cleanText.replace(config.botName, "").trim();
+    for (const alias of config.nameAliases) {
+      cleanText = cleanText.replace(alias, "").trim();
+    }
+    // Убираем множественные пробелы
+    cleanText = cleanText.replace(/\s+/g, " ").trim();
+  }
 
   const allCommands = [...config.commands, ...learnedCommands];
   const sortedCommands = [...allCommands].sort(
     (a, b) => b.trigger.length - a.trigger.length,
   );
 
-  console.log(`\n🔍 Проверка "${lowerText}" (упоминание: ${botMentioned})`);
-  console.log(
-    `📚 Всего команд: ${allCommands.length} (выученных: ${learnedCommands.length})`,
-  );
+  console.log(`\n🔍 Оригинал: "${text}"`);
+  console.log(`🔍 Очищенный: "${cleanText}"`);
+  console.log(`🔍 Упоминание: ${botMentioned}`);
 
   for (const cmd of sortedCommands) {
     let matched = false;
 
     if (cmd.exactMatch !== false) {
-      if (lowerText === cmd.trigger) {
+      if (cleanText === cmd.trigger) {
         matched = true;
         console.log(`  ✅ Точное совпадение: "${cmd.trigger}"`);
       }
     } else {
-      if (lowerText.includes(cmd.trigger)) {
+      if (cleanText.includes(cmd.trigger)) {
         matched = true;
         console.log(`  ✅ Частичное совпадение: "${cmd.trigger}"`);
       }
     }
 
     if (matched) {
-      console.log(
-        `  📌 needMention: ${cmd.needMention}, botMentioned: ${botMentioned}`,
-      );
-      if (cmd.needMention && !botMentioned) {
-        console.log(`  ❌ Пропущено (нужно имя)`);
+      if (cmd.needMention === true && !botMentioned) {
+        console.log(`  ❌ Нужно упоминание, но его нет`);
         continue;
       }
       console.log(`  📢 ОТВЕТ: ${cmd.response}`);
@@ -105,7 +109,6 @@ function checkAllCommands(text) {
     }
   }
 
-  console.log(`  ❌ Ничего не найдено`);
   return null;
 }
 
@@ -131,7 +134,6 @@ async function handleMessage(msg) {
       let needMention = false;
       let exactMatch = true;
 
-      // Убираем имя бота из триггера
       if (triggerPart.toLowerCase().includes(config.botName)) {
         triggerPart = triggerPart
           .toLowerCase()
@@ -139,15 +141,10 @@ async function handleMessage(msg) {
           .trim();
       }
 
-      // ПРОВЕРЯЕМ ФЛАГИ И УБИРАЕМ ИХ ИЗ ОТВЕТА
       const lowerText = text.toLowerCase();
       if (lowerText.includes("с именем")) {
         needMention = true;
         response = response.replace(/с именем/gi, "").trim();
-      }
-      if (lowerText.includes("без имени")) {
-        needMention = false;
-        response = response.replace(/без имени/gi, "").trim();
       }
       if (lowerText.includes("частично")) {
         exactMatch = false;
@@ -157,7 +154,6 @@ async function handleMessage(msg) {
       const trigger = triggerPart.toLowerCase();
 
       if (trigger && response) {
-        // Проверяем是否存在 уже
         const existingIndex = learnedCommands.findIndex(
           (c) => c.trigger === trigger,
         );
@@ -260,7 +256,6 @@ async function handleMessage(msg) {
   }
 }
 
-// ========== WEBHOOK ==========
 app.post(`/webhook/${TOKEN}`, (req, res) => {
   bot.processUpdate(req.body);
   res.sendStatus(200);
