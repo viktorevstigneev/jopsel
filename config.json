@@ -239,7 +239,8 @@
         "хуйня"
       ],
       "needMention": false,
-      "exactMatch": false
+      "exactMatch": false,
+      "randomResponse": true
     }
   ]
 }
