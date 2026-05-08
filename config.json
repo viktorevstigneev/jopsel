@@ -140,7 +140,7 @@
     },
     {
       "trigger": "похуй",
-      "response": "по хуй ты будешь на коленях стоять",
+      "response": "ой попизди мне тут, когда давали выбирать, ты выбрало в жопу раз",
       "needMention": false,
       "exactMatch": false
     },
@@ -222,6 +222,12 @@
       "response": "важно чтобы всегда мы оставались мыми,а они оними",
       "needMention": true,
       "exactMatch": true
+    },
+    {
+      "trigger": "ирис",
+      "response": "дрисня ирисня в прошлом, © Виктор тайлер дерден",
+      "needMention": false,
+      "exactMatch": false
     }
   ]
 }
