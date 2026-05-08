@@ -35,6 +35,7 @@ function loadLearnedCommands() {
       const data = fs.readFileSync(LEARNED_FILE, "utf8");
       learnedCommands = JSON.parse(data);
       console.log(`📚 Загружено ${learnedCommands.length} выученных команд`);
+      console.log(JSON.stringify(learnedCommands, null, 2));
     }
   } catch (error) {
     console.error("Ошибка загрузки learned:", error);
@@ -71,25 +72,40 @@ function checkAllCommands(text) {
     (a, b) => b.trigger.length - a.trigger.length,
   );
 
+  console.log(`\n🔍 Проверка "${lowerText}" (упоминание: ${botMentioned})`);
+  console.log(
+    `📚 Всего команд: ${allCommands.length} (выученных: ${learnedCommands.length})`,
+  );
+
   for (const cmd of sortedCommands) {
     let matched = false;
 
     if (cmd.exactMatch !== false) {
       if (lowerText === cmd.trigger) {
         matched = true;
+        console.log(`  ✅ Точное совпадение: "${cmd.trigger}"`);
       }
     } else {
       if (lowerText.includes(cmd.trigger)) {
         matched = true;
+        console.log(`  ✅ Частичное совпадение: "${cmd.trigger}"`);
       }
     }
 
     if (matched) {
-      if (cmd.needMention && !botMentioned) continue;
+      console.log(
+        `  📌 needMention: ${cmd.needMention}, botMentioned: ${botMentioned}`,
+      );
+      if (cmd.needMention && !botMentioned) {
+        console.log(`  ❌ Пропущено (нужно имя)`);
+        continue;
+      }
+      console.log(`  📢 ОТВЕТ: ${cmd.response}`);
       return cmd.response;
     }
   }
 
+  console.log(`  ❌ Ничего не найдено`);
   return null;
 }
 
@@ -112,9 +128,10 @@ async function handleMessage(msg) {
     if (parts.length === 2) {
       let triggerPart = parts[0].replace(/запомни:/i, "").trim();
       let response = parts[1].trim();
-      let needMention = false; // ← по умолчанию false (работает без имени)
+      let needMention = false;
       let exactMatch = true;
 
+      // Убираем имя бота из триггера
       if (triggerPart.toLowerCase().includes(config.botName)) {
         triggerPart = triggerPart
           .toLowerCase()
@@ -122,17 +139,44 @@ async function handleMessage(msg) {
           .trim();
       }
 
-      if (text.toLowerCase().includes("с именем")) needMention = true;
-      if (text.toLowerCase().includes("частично")) exactMatch = false;
+      // ПРОВЕРЯЕМ ФЛАГИ И УБИРАЕМ ИХ ИЗ ОТВЕТА
+      const lowerText = text.toLowerCase();
+      if (lowerText.includes("с именем")) {
+        needMention = true;
+        response = response.replace(/с именем/gi, "").trim();
+      }
+      if (lowerText.includes("без имени")) {
+        needMention = false;
+        response = response.replace(/без имени/gi, "").trim();
+      }
+      if (lowerText.includes("частично")) {
+        exactMatch = false;
+        response = response.replace(/частично/gi, "").trim();
+      }
 
       const trigger = triggerPart.toLowerCase();
 
       if (trigger && response) {
-        learnedCommands.push({ trigger, response, needMention, exactMatch });
+        // Проверяем是否存在 уже
+        const existingIndex = learnedCommands.findIndex(
+          (c) => c.trigger === trigger,
+        );
+        if (existingIndex !== -1) {
+          learnedCommands[existingIndex] = {
+            trigger,
+            response,
+            needMention,
+            exactMatch,
+          };
+        } else {
+          learnedCommands.push({ trigger, response, needMention, exactMatch });
+        }
         saveLearnedCommands();
+
+        const flagsText = needMention ? "с именем" : "без имени";
         await bot.sendMessage(
           chatId,
-          `✅ Запомнил! "${trigger}" → "${response}"\n(работает без упоминания)`,
+          `✅ Запомнил! "${trigger}" → "${response}" (${flagsText})`,
         );
         return;
       }
@@ -176,7 +220,10 @@ async function handleMessage(msg) {
       return;
     }
     const list = learnedCommands
-      .map((cmd, i) => `${i + 1}. "${cmd.trigger}" → ${cmd.response}`)
+      .map((cmd, i) => {
+        const flags = cmd.needMention ? "[с именем]" : "[без имени]";
+        return `${i + 1}. "${cmd.trigger}" → ${cmd.response} ${flags}`;
+      })
       .join("\n");
     await bot.sendMessage(chatId, `📚 Выученные команды:\n${list}`);
     return;
@@ -202,7 +249,7 @@ async function handleMessage(msg) {
     const learnedCount = learnedCommands.length;
     await bot.sendMessage(
       chatId,
-      `📋 Команды:\n🏠 Встроенных: ${totalBuiltin}\n🎓 Выученных: ${learnedCount}\n\n💡 Учить: запомни: фраза -> ответ`,
+      `📋 Команды:\n🏠 Встроенных: ${totalBuiltin}\n🎓 Выученных: ${learnedCount}\n\n💡 Учить: запомни: фраза -> ответ\n   Флаги: 'с именем' или 'частично'`,
     );
     return;
   }
