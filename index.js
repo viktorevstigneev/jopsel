@@ -6,6 +6,7 @@ const fs = require("fs");
 const TOKEN =
   process.env.BOT_TOKEN || "8299226870:AAEKmJUrga6Vf67BAxZctbrPGn2M9ToXOxc";
 const PORT = process.env.PORT || 3000;
+const ADMIN_ID = 804419469; // ТВОЙ ID (только ты admin)
 
 const bot = new TelegramBot(TOKEN, { webHook: { autoOpen: false } });
 const app = express();
@@ -176,6 +177,10 @@ const config = {
 let learnedCommands = [];
 const LEARNED_FILE = "learned_commands.json";
 
+function isAdmin(userId) {
+  return userId === ADMIN_ID;
+}
+
 function loadLearnedCommands() {
   try {
     if (fs.existsSync(LEARNED_FILE)) {
@@ -207,17 +212,14 @@ function isBotMentioned(text) {
   return false;
 }
 
-// НОВАЯ ФУНКЦИЯ: точная проверка команды
+// Проверка команд
 function checkAllCommands(text) {
   if (!text) return null;
 
   const lowerText = text.toLowerCase().trim();
   const botMentioned = isBotMentioned(text);
 
-  // Проверяем все команды (встроенные + выученные)
   const allCommands = [...config.commands, ...learnedCommands];
-
-  // Сортируем по длине (чтобы "доброе утро всем" проверилось раньше "доброе утро")
   const sortedCommands = [...allCommands].sort(
     (a, b) => b.trigger.length - a.trigger.length,
   );
@@ -225,13 +227,11 @@ function checkAllCommands(text) {
   for (const cmd of sortedCommands) {
     let matched = false;
 
-    if (cmd.exactMatch || cmd.exactMatch === undefined) {
-      // Точное совпадение
+    if (cmd.exactMatch !== false) {
       if (lowerText === cmd.trigger) {
         matched = true;
       }
     } else {
-      // Частичное совпадение (для старых команд)
       if (lowerText.includes(cmd.trigger)) {
         matched = true;
       }
@@ -249,23 +249,29 @@ function checkAllCommands(text) {
 // ========== ОБРАБОТЧИК ==========
 async function handleMessage(msg) {
   const chatId = msg.chat.id;
+  const userId = msg.from.id;
   const text = msg.text;
   if (!text) return;
 
-  console.log(`[Жопсель] ${text}`);
+  console.log(`\n📨 [ВХОДИТ] от ${userId}: ${text}`);
 
-  // ===== ОБУЧЕНИЕ НОВЫМ КОМАНДАМ =====
-  if (text.includes("запомни:")) {
-    // Формат: запомни: фраза -> ответ
-    // или: запомни: фраза -> ответ без имени
-    let parts = text.split("->");
+  // ===== ОБУЧЕНИЕ (только для админа) =====
+  if (text.toLowerCase().includes("запомни:")) {
+    if (!isAdmin(userId)) {
+      await bot.sendMessage(
+        chatId,
+        "❌ Ты не мой хозяин! Только @804419469 может меня учить.",
+      );
+      return;
+    }
+
+    const parts = text.split("->");
     if (parts.length === 2) {
-      let triggerPart = parts[0].replace("запомни:", "").trim();
+      let triggerPart = parts[0].replace(/запомни:/i, "").trim();
       let response = parts[1].trim();
       let needMention = true;
       let exactMatch = true;
 
-      // Убираем имя бота из триггера если есть
       if (triggerPart.toLowerCase().includes(config.botName)) {
         triggerPart = triggerPart
           .toLowerCase()
@@ -273,25 +279,34 @@ async function handleMessage(msg) {
           .trim();
       }
 
-      // Проверяем флаги
-      if (text.includes("без имени")) needMention = false;
-      if (text.includes("частично")) exactMatch = false;
+      if (text.toLowerCase().includes("без имени")) needMention = false;
+      if (text.toLowerCase().includes("частично")) exactMatch = false;
 
       const trigger = triggerPart.toLowerCase();
 
       if (trigger && response) {
-        learnedCommands.push({ trigger, response, needMention, exactMatch });
-        saveLearnedCommands();
-
-        let flags = [];
-        if (!needMention) flags.push("без имени");
-        if (!exactMatch) flags.push("частичное совпадение");
-        const flagsText = flags.length ? ` (${flags.join(", ")})` : "";
-
-        await bot.sendMessage(
-          chatId,
-          `✅ Запомнил! "${trigger}" → "${response}"${flagsText}`,
+        const existingIndex = learnedCommands.findIndex(
+          (c) => c.trigger === trigger,
         );
+        if (existingIndex !== -1) {
+          learnedCommands[existingIndex] = {
+            trigger,
+            response,
+            needMention,
+            exactMatch,
+          };
+          await bot.sendMessage(
+            chatId,
+            `✅ Обновил команду! "${trigger}" → "${response}"`,
+          );
+        } else {
+          learnedCommands.push({ trigger, response, needMention, exactMatch });
+          await bot.sendMessage(
+            chatId,
+            `✅ Запомнил! "${trigger}" → "${response}"`,
+          );
+        }
+        saveLearnedCommands();
         return;
       }
     }
@@ -302,9 +317,20 @@ async function handleMessage(msg) {
     return;
   }
 
-  // ===== УДАЛЕНИЕ ВЫУЧЕННЫХ КОМАНД =====
-  if (text.startsWith("забудь:")) {
-    const triggerToRemove = text.replace("забудь:", "").trim().toLowerCase();
+  // ===== УДАЛЕНИЕ (только для админа) =====
+  if (text.toLowerCase().startsWith("забудь:")) {
+    if (!isAdmin(userId)) {
+      await bot.sendMessage(
+        chatId,
+        "❌ Ты не мой хозяин! Только @804419469 может мной управлять.",
+      );
+      return;
+    }
+
+    const triggerToRemove = text
+      .replace(/забудь:/i, "")
+      .trim()
+      .toLowerCase();
     const index = learnedCommands.findIndex(
       (cmd) => cmd.trigger === triggerToRemove,
     );
@@ -322,13 +348,10 @@ async function handleMessage(msg) {
     return;
   }
 
-  // ===== СПИСОК ВЫУЧЕННЫХ КОМАНД =====
+  // ===== СПИСОК ВЫУЧЕННЫХ КОМАНД (видят все) =====
   if (text === "мои команды" || text === "что я умею") {
     if (learnedCommands.length === 0) {
-      await bot.sendMessage(
-        chatId,
-        "📭 Пока нет выученных команд. Используй: запомни: фраза -> ответ",
-      );
+      await bot.sendMessage(chatId, "📭 Пока нет выученных команд.");
       return;
     }
 
@@ -344,7 +367,7 @@ async function handleMessage(msg) {
 
     await bot.sendMessage(
       chatId,
-      `📚 *Выученные команды:*\n\n${list}\n\n🗑️ Удалить: забыть: команда`,
+      `📚 *Выученные команды (${learnedCommands.length}):*\n\n${list}`,
       { parse_mode: "Markdown" },
     );
     return;
@@ -364,7 +387,7 @@ async function handleMessage(msg) {
     return;
   }
 
-  // Список всех команд
+  // Список всех команд (видят все)
   if (cleanText.includes("список команд") || cleanText === "команды") {
     const builtinList = config.commands
       .slice(0, 10)
@@ -373,14 +396,19 @@ async function handleMessage(msg) {
     const totalBuiltin = config.commands.length;
     const learnedCount = learnedCommands.length;
 
+    let adminNote = "";
+    if (isAdmin(userId)) {
+      adminNote =
+        "\n\n👑 *Админ-команды:*\nзапомни: фраза -> ответ\nзабудь: команда";
+    }
+
     await bot.sendMessage(
       chatId,
       `📋 *Команды Жопселя*\n\n` +
         `🏠 *Встроенные:* ${totalBuiltin}\n` +
         `🎓 *Выученные:* ${learnedCount}\n\n` +
-        `💡 *Добавить:* запомни: фраза -> ответ\n` +
-        `📚 *Мои команды:* мои команды\n` +
-        `🗑️ *Удалить:* забыть: команда`,
+        `💡 *Используй:* мои команды` +
+        adminNote,
       { parse_mode: "Markdown" },
     );
     return;
@@ -401,8 +429,9 @@ app.post(`/webhook/${TOKEN}`, (req, res) => {
 app.get("/", (req, res) => res.send("Жопсель бот работает"));
 
 app.listen(PORT, async () => {
-  loadLearnedCommands(); // Загружаем сохранённые команды
+  loadLearnedCommands();
   console.log(`✅ Сервер на порту ${PORT}`);
+  console.log(`👑 Админ ID: ${ADMIN_ID}`);
   const webhookUrl = `${process.env.RENDER_EXTERNAL_URL || "https://jopsel.onrender.com"}/webhook/${TOKEN}`;
   await bot.setWebHook(webhookUrl);
   console.log(`🔗 Вебхук: ${webhookUrl}`);
