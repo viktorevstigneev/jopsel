@@ -294,16 +294,18 @@ async function handleMessage(msg) {
     return;
   }
 
-  if (text.toLowerCase().startsWith("жопсель сарказм:")) {
-    const targetText = text.replace(/жопсель сарказм:/i, "").trim();
-    if (targetText) {
-      await bot.sendMessage(chatId, sarcasm.sarcasm(targetText), {
+  // ========== САРКАЗМ (через ответ на сообщение) ==========
+  if (text.toLowerCase().startsWith("жопсель сарказм")) {
+    if (msg.reply_to_message && msg.reply_to_message.text) {
+      const originalText = msg.reply_to_message.text;
+      await bot.sendMessage(chatId, sarcasm.sarcasm(originalText), {
         parse_mode: "Markdown",
       });
     } else {
       await bot.sendMessage(
         chatId,
-        "❌ Напиши: жопсель сарказм: какой-то текст",
+        "❌ Ответь на сообщение и напиши: *жопсель сарказм*\n\nПереведу тупой текст в сарказм!",
+        { parse_mode: "Markdown" },
       );
     }
     return;

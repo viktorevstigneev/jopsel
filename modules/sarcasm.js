@@ -2,7 +2,7 @@ function sarcasm(text) {
   let result = "";
   let upper = false;
   for (let char of text) {
-    if (char.match(/[a-zA-Zа-яА-Я]/)) {
+    if (char.match(/[a-zA-Zа-яА-ЯЁё]/)) {
       result += upper ? char.toUpperCase() : char.toLowerCase();
       upper = !upper;
     } else {
@@ -11,4 +11,5 @@ function sarcasm(text) {
   }
   return `😏 *Сарказм-режим:*\n\n${result}`;
 }
+
 module.exports = { sarcasm };
