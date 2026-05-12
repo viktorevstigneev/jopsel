@@ -80,6 +80,15 @@ async function handleMessage(msg) {
     `👤 Статус: ${admin.isMainAdmin(userId) ? "ГЛАВНЫЙ АДМИН" : admin.getSubAdminGroup(userId) ? `ПОД-АДМИН (${admin.getSubAdminGroup(userId)})` : "ПОЛЬЗОВАТЕЛЬ"}`,
   );
 
+  // ========== ПРОВЕРКА НА ПОЛНЫЙ ИГНОР (M2) ==========
+  if (admin.shouldIgnoreUser(userId)) {
+    console.log(`🔇 Полный игнор пользователя ${userId} (группа M2)`);
+    return; // Вообще не обрабатываем никакие команды
+  }
+
+  // ========== ПРОВЕРКА НА M1 ==========
+  const isTrashM1 = admin.isTrashM1(userId);
+
   // ========== СЧЕТЧИК МАТА ==========
   const swearResult = swear.checkSwear(text, userId, msg.from.first_name);
   if (swearResult.counted && swearResult.count > 0) {
@@ -89,6 +98,10 @@ async function handleMessage(msg) {
   // ========== НАПОМИНАНИЯ ==========
   const reminderData = reminders.parseReminder(text);
   if (reminderData) {
+    if (isTrashM1) {
+      await bot.sendMessage(chatId, admin.getResponseForAdmin(userId));
+      return;
+    }
     if (!admin.isAnyAdmin(userId)) {
       await bot.sendMessage(
         chatId,
@@ -117,6 +130,10 @@ async function handleMessage(msg) {
     text.toLowerCase() === "жопсель цитата" ||
     text.toLowerCase() === "жопсель рандомная цитата"
   ) {
+    if (isTrashM1) {
+      await bot.sendMessage(chatId, admin.getResponseForAdmin(userId));
+      return;
+    }
     const quote = quotes.getRandomQuote(chatId);
     if (quote) {
       await bot.sendMessage(
@@ -135,6 +152,10 @@ async function handleMessage(msg) {
   }
 
   if (text.toLowerCase().startsWith("жопсель добавь цитату:")) {
+    if (isTrashM1) {
+      await bot.sendMessage(chatId, admin.getResponseForAdmin(userId));
+      return;
+    }
     const quoteText = text.replace(/жопсель добавь цитату:/i, "").trim();
     if (quoteText) {
       quotes.addQuote(quoteText, userId, msg.from.first_name, chatId);
@@ -146,6 +167,10 @@ async function handleMessage(msg) {
   }
 
   if (text.toLowerCase() === "жопсель топ мата") {
+    if (isTrashM1) {
+      await bot.sendMessage(chatId, admin.getResponseForAdmin(userId));
+      return;
+    }
     const top = swear.getTopSwearers();
     await bot.sendMessage(chatId, top, { parse_mode: "Markdown" });
     return;
@@ -154,6 +179,10 @@ async function handleMessage(msg) {
   // ========== ОПРОСЫ ==========
   const pollData = poll.parsePollCommand(text, userId);
   if (pollData) {
+    if (isTrashM1) {
+      await bot.sendMessage(chatId, admin.getResponseForAdmin(userId));
+      return;
+    }
     if (!admin.isAnyAdmin(userId)) {
       await bot.sendMessage(
         chatId,
@@ -181,28 +210,48 @@ async function handleMessage(msg) {
     text.toLowerCase() === "жопсель последний опрос" ||
     text.toLowerCase() === "жопсель опросы"
   ) {
+    if (isTrashM1) {
+      await bot.sendMessage(chatId, admin.getResponseForAdmin(userId));
+      return;
+    }
     await poll.showLastPoll(bot, chatId);
     return;
   }
 
   // ========== ИГРЫ ==========
   if (text.toLowerCase() === "жопсель рулетка") {
+    if (isTrashM1) {
+      await bot.sendMessage(chatId, admin.getResponseForAdmin(userId));
+      return;
+    }
     const result = roulette.play(userId);
     await bot.sendMessage(chatId, result.message, { parse_mode: "Markdown" });
     return;
   }
 
   if (text.toLowerCase() === "жопсель монетка") {
+    if (isTrashM1) {
+      await bot.sendMessage(chatId, admin.getResponseForAdmin(userId));
+      return;
+    }
     await bot.sendMessage(chatId, coin.flip(), { parse_mode: "Markdown" });
     return;
   }
 
   if (text.toLowerCase() === "жопсель кубик") {
+    if (isTrashM1) {
+      await bot.sendMessage(chatId, admin.getResponseForAdmin(userId));
+      return;
+    }
     await bot.sendMessage(chatId, dice.roll(), { parse_mode: "Markdown" });
     return;
   }
 
   if (text.toLowerCase().startsWith("жопсель шар:")) {
+    if (isTrashM1) {
+      await bot.sendMessage(chatId, admin.getResponseForAdmin(userId));
+      return;
+    }
     const question = text.replace(/жопсель шар:/i, "").trim();
     if (question) {
       await bot.sendMessage(chatId, oracle.ask(question), {
@@ -218,12 +267,20 @@ async function handleMessage(msg) {
   }
 
   if (text.toLowerCase().includes("жопсель игра")) {
+    if (isTrashM1) {
+      await bot.sendMessage(chatId, admin.getResponseForAdmin(userId));
+      return;
+    }
     const response = rps.startGame(userId);
     await bot.sendMessage(chatId, response);
     return;
   }
 
   if (text.toLowerCase().includes("жопсель статистика")) {
+    if (isTrashM1) {
+      await bot.sendMessage(chatId, admin.getResponseForAdmin(userId));
+      return;
+    }
     const userName = msg.from.first_name || "Ты";
     const response = rps.getStatsMessage(userId, userName);
     await bot.sendMessage(chatId, response, { parse_mode: "Markdown" });
@@ -231,6 +288,10 @@ async function handleMessage(msg) {
   }
 
   if (rps.isGameActive(userId)) {
+    if (isTrashM1) {
+      await bot.sendMessage(chatId, admin.getResponseForAdmin(userId));
+      return;
+    }
     const result = rps.processMove(userId, text, msg.from.first_name);
     if (result.error) {
       await bot.sendMessage(chatId, result.message);
@@ -242,6 +303,10 @@ async function handleMessage(msg) {
 
   // ========== БЫДЛО-ФИШКИ ==========
   if (text.toLowerCase().startsWith("жопсель оскорби")) {
+    if (isTrashM1) {
+      await bot.sendMessage(chatId, admin.getResponseForAdmin(userId));
+      return;
+    }
     const target = text
       .replace(/жопсель оскорби/i, "")
       .trim()
@@ -255,6 +320,10 @@ async function handleMessage(msg) {
   }
 
   if (text.toLowerCase() === "жопсель отмазка") {
+    if (isTrashM1) {
+      await bot.sendMessage(chatId, admin.getResponseForAdmin(userId));
+      return;
+    }
     await bot.sendMessage(chatId, excuses.getExcuse(), {
       parse_mode: "Markdown",
     });
@@ -262,6 +331,10 @@ async function handleMessage(msg) {
   }
 
   if (text.toLowerCase().startsWith("жопсель промилле")) {
+    if (isTrashM1) {
+      await bot.sendMessage(chatId, admin.getResponseForAdmin(userId));
+      return;
+    }
     const match = text.match(
       /жопсель промилле\s+(\d+)(?:\s+(\d+))?(?:\s+(\d+))?/i,
     );
@@ -282,6 +355,10 @@ async function handleMessage(msg) {
   }
 
   if (text.toLowerCase().startsWith("жопсель нахуй")) {
+    if (isTrashM1) {
+      await bot.sendMessage(chatId, admin.getResponseForAdmin(userId));
+      return;
+    }
     const target = text
       .replace(/жопсель нахуй/i, "")
       .trim()
@@ -296,6 +373,10 @@ async function handleMessage(msg) {
 
   // ========== САРКАЗМ (через ответ на сообщение) ==========
   if (text.toLowerCase().startsWith("жопсель сарказм")) {
+    if (isTrashM1) {
+      await bot.sendMessage(chatId, admin.getResponseForAdmin(userId));
+      return;
+    }
     if (msg.reply_to_message && msg.reply_to_message.text) {
       const originalText = msg.reply_to_message.text;
       await bot.sendMessage(chatId, sarcasm.sarcasm(originalText), {
@@ -315,6 +396,10 @@ async function handleMessage(msg) {
     text.toLowerCase() === "жопсель войс" ||
     text.toLowerCase() === "жопсель рандом звук"
   ) {
+    if (isTrashM1) {
+      await bot.sendMessage(chatId, admin.getResponseForAdmin(userId));
+      return;
+    }
     const sound = randomSound.getRandomSound();
     await bot.sendMessage(
       chatId,
@@ -325,8 +410,12 @@ async function handleMessage(msg) {
   }
 
   // ========== АДМИН-КОМАНДЫ ==========
-  if (text.match(/^жопсель\s+\+админ\s+(g[123])$/i)) {
-    const match = text.match(/^жопсель\s+\+админ\s+(g[123])$/i);
+  if (text.match(/^жопсель\s+\+админ\s+(g[123]|m[12])$/i)) {
+    if (isTrashM1) {
+      await bot.sendMessage(chatId, admin.getResponseForAdmin(userId));
+      return;
+    }
+    const match = text.match(/^жопсель\s+\+админ\s+(g[123]|m[12])$/i);
     const group = match[1].toLowerCase();
 
     if (msg.reply_to_message && msg.reply_to_message.from) {
@@ -335,13 +424,17 @@ async function handleMessage(msg) {
     } else {
       await bot.sendMessage(
         chatId,
-        "❌ Чтобы добавить админа, ответьте на сообщение пользователя и напишите:\nжопсель +админ g1\n\nГруппы: g1 (может добавлять), g2 (только чтение), g3 (минимальные права)",
+        "❌ Чтобы добавить админа, ответьте на сообщение пользователя и напишите:\nжопсель +админ g1\n\nГруппы: g1/g2/g3/m1/m2",
       );
     }
     return;
   }
 
   if (text.match(/^жопсель\s+-админ$/i)) {
+    if (isTrashM1) {
+      await bot.sendMessage(chatId, admin.getResponseForAdmin(userId));
+      return;
+    }
     if (msg.reply_to_message && msg.reply_to_message.from) {
       const targetUserId = msg.reply_to_message.from.id;
       await admin.removeSubAdmin(msg, targetUserId, userId, bot);
@@ -354,13 +447,68 @@ async function handleMessage(msg) {
     return;
   }
 
+  if (text.match(/^жопсель\s+смена\s+группы\s+(g[123]|m[12])$/i)) {
+    if (isTrashM1) {
+      await bot.sendMessage(chatId, admin.getResponseForAdmin(userId));
+      return;
+    }
+    const match = text.match(/^жопсель\s+смена\s+группы\s+(g[123]|m[12])$/i);
+    const newGroup = match[1].toLowerCase();
+
+    if (msg.reply_to_message && msg.reply_to_message.from) {
+      const targetUserId = msg.reply_to_message.from.id;
+      await admin.changeSubAdminGroup(msg, targetUserId, newGroup, userId, bot);
+    } else {
+      await bot.sendMessage(
+        chatId,
+        "❌ Ответь на сообщение админа и напиши:\nжопсель смена группы g3",
+      );
+    }
+    return;
+  }
+
+  if (text.match(/^жопсель\s+опустить\s+(m[12])$/i)) {
+    if (isTrashM1) {
+      await bot.sendMessage(chatId, admin.getResponseForAdmin(userId));
+      return;
+    }
+    const match = text.match(/^жопсель\s+опустить\s+(m[12])$/i);
+    const trashGroup = match[1].toLowerCase();
+
+    if (msg.reply_to_message && msg.reply_to_message.from) {
+      const targetUserId = msg.reply_to_message.from.id;
+      await admin.changeSubAdminGroup(
+        msg,
+        targetUserId,
+        trashGroup,
+        userId,
+        bot,
+      );
+    } else {
+      await bot.sendMessage(
+        chatId,
+        "❌ Ответь на сообщение пользователя и напиши:\nжопсель опустить m1\n\n🤐 M1 - бот будет говорить 'я с тобой не разговариваю'\n🔇 M2 - бот полностью игнорит",
+        { parse_mode: "Markdown" },
+      );
+    }
+    return;
+  }
+
   if (text === "жопсель админы" || text === "админы жопселя") {
+    if (isTrashM1) {
+      await bot.sendMessage(chatId, admin.getResponseForAdmin(userId));
+      return;
+    }
     await admin.showAdminsList(msg, bot);
     return;
   }
 
   // ========== ОБУЧЕНИЕ ==========
   if (text.toLowerCase().includes("запомни:")) {
+    if (isTrashM1) {
+      await bot.sendMessage(chatId, admin.getResponseForAdmin(userId));
+      return;
+    }
     if (!admin.isAnyAdmin(userId)) {
       await bot.sendMessage(chatId, "❌ Только админы могут учить меня!");
       return;
@@ -390,6 +538,10 @@ async function handleMessage(msg) {
   }
 
   if (text.toLowerCase().startsWith("забудь:")) {
+    if (isTrashM1) {
+      await bot.sendMessage(chatId, admin.getResponseForAdmin(userId));
+      return;
+    }
     const canDelete =
       admin.isMainAdmin(userId) || admin.getSubAdminGroup(userId) === "g1";
     if (!canDelete) {
@@ -415,6 +567,10 @@ async function handleMessage(msg) {
   }
 
   if (text === "мои команды" || text === "что я умею") {
+    if (isTrashM1) {
+      await bot.sendMessage(chatId, admin.getResponseForAdmin(userId));
+      return;
+    }
     const learned = learning.getLearnedCommands();
     if (learned.length === 0) {
       await bot.sendMessage(chatId, "📭 Нет выученных команд");
@@ -433,6 +589,10 @@ async function handleMessage(msg) {
   // ========== ПРОВЕРКА КОМАНД ИЗ КОНФИГА ==========
   const commandResponse = commands.checkAllCommands(text);
   if (commandResponse) {
+    if (isTrashM1) {
+      await bot.sendMessage(chatId, admin.getResponseForAdmin(userId));
+      return;
+    }
     await bot.sendMessage(chatId, commandResponse);
     return;
   }
@@ -441,12 +601,18 @@ async function handleMessage(msg) {
   const { cleanText } = cleanMention(text, config);
   if (cleanText === config.botName || cleanText === `${config.botName}?`) {
     const response = admin.getResponseForAdmin(userId);
-    await bot.sendMessage(chatId, response);
+    if (response) {
+      await bot.sendMessage(chatId, response);
+    }
     return;
   }
 
   // ========== СПИСОК ВСЕХ КОМАНД ==========
   if (cleanText.includes("список команд") || cleanText === "команды") {
+    if (isTrashM1) {
+      await bot.sendMessage(chatId, admin.getResponseForAdmin(userId));
+      return;
+    }
     const totalBuiltin = config.commands.length;
     const learnedCount = learning.getLearnedCommands().length;
     await bot.sendMessage(
@@ -465,7 +631,7 @@ async function handleMessage(msg) {
 • жопсель отмазка
 • жопсель промилле [бутылок] [вес] [часов]
 • жопсель нахуй @username
-• жопсель сарказм: текст
+• жопсель сарказм (ответь на сообщение)
 
 📊 *ДРУГОЕ*
 • жопсель опрос: текст - создать опрос
@@ -474,6 +640,13 @@ async function handleMessage(msg) {
 • жопсель цитата - рандомная цитата
 • жопсель добавь цитату: текст
 • жопсель напомни через [число] мин: текст
+
+👑 *АДМИН-КОМАНДЫ*
+• жопсель +админ g1/g2/g3/m1/m2 (ответь на сообщение)
+• жопсель -админ (ответь на сообщение)
+• жопсель смена группы g1 (ответь на сообщение)
+• жопсель опустить m1/m2 (ответь на сообщение)
+• жопсель админы - список
 
 💡 Учить: *запомни: фраза -> ответ*
 🏠 Встроенных команд: ${totalBuiltin}
@@ -487,7 +660,9 @@ async function handleMessage(msg) {
   const { botMentioned } = cleanMention(text, config);
   if (botMentioned) {
     const response = admin.getResponseForAdmin(userId);
-    await bot.sendMessage(chatId, response);
+    if (response) {
+      await bot.sendMessage(chatId, response);
+    }
     return;
   }
 }
@@ -512,6 +687,7 @@ app.listen(PORT, async () => {
     "🤬 Загружены: счётчик мата, оскорблялка, отмазка, алко-калькулятор, послать нахуй, сарказм",
   );
   console.log("📝 Загружены: цитатник, напоминания");
+  console.log("👑 Загружены: админы g1/g2/g3 и мусорные m1/m2");
 });
 
 bot.on("message", handleMessage);
