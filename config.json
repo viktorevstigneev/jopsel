@@ -24,6 +24,40 @@
       "randomResponse": true
     },
     {
+      "trigger": "утра",
+      "responses": [
+        "какое нахуй утро",
+        "соси",
+        "иди нахуй",
+        "утро добрым не бывает",
+        "спать хочу отъебись",
+        "биба и боба",
+        "додик ты утренний",
+        "миру мир а тебе хуй в рот",
+        "добрым утро не бывает"
+      ],
+      "needMention": false,
+      "exactMatch": false,
+      "randomResponse": true
+    },
+    {
+      "trigger": "утре",
+      "responses": [
+        "какое нахуй утро",
+        "соси",
+        "иди нахуй",
+        "утро добрым не бывает",
+        "спать хочу отъебись",
+        "биба и боба",
+        "додик ты утренний",
+        "миру мир а тебе хуй в рот",
+        "добрым утро не бывает"
+      ],
+      "needMention": false,
+      "exactMatch": false,
+      "randomResponse": true
+    },
+    {
       "trigger": "нароод",
       "responses": ["хуй те в рот", "че орешь", "заткнись"],
       "needMention": false,
@@ -79,14 +113,14 @@
     },
     {
       "trigger": "илья",
-      "responses": ["ростом в три хуя", "илья хуилья", "иди нахуй Илья"],
+      "responses": ["ростом в три хуя", "илья хуилья", "жопомоноколесо"],
       "needMention": false,
       "exactMatch": true,
       "randomResponse": true
     },
     {
       "trigger": "даша",
-      "responses": ["дохуя наша", "даша пизда", "даша ебашь"],
+      "responses": ["дохуя наша", "даш дашь?", "даш ебашь"],
       "needMention": false,
       "exactMatch": true,
       "randomResponse": true
