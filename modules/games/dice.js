@@ -8,6 +8,6 @@ function roll() {
     5: "⚄",
     6: "⚅",
   };
-  return `🎲 *Кубик показал:* ${dice[num]} *${num}!*`;
+  return `🎲`;
 }
 module.exports = { roll };
