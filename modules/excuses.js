@@ -9,6 +9,6 @@ const excuses = [
 ];
 
 function getExcuse() {
-  return `📢 *ОТМАЗКА:* ${excuses[Math.floor(Math.random() * excuses.length)]}`;
+  return `${excuses[Math.floor(Math.random() * excuses.length)]}`;
 }
 module.exports = { getExcuse };

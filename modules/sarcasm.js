@@ -9,7 +9,7 @@ function sarcasm(text) {
       result += char;
     }
   }
-  return `😏 *Сарказм-режим:*\n\n${result}`;
+  return `${result}`;
 }
 
 module.exports = { sarcasm };
