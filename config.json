@@ -7,163 +7,193 @@
   "welcomeMessage": "🐶 *Привет! Я Жопсель!*",
   "commands": [
     {
-      "trigger": "доброе утро",
-      "response": "какое нахуй утро",
+      "trigger": "утро",
+      "responses": [
+        "какое нахуй утро",
+        "соси",
+        "иди нахуй",
+        "утро добрым не бывает",
+        "спать хочу отъебись",
+        "биба и боба",
+        "додик ты утренний",
+        "миру мир а тебе хуй в рот",
+        "добрым утро не бывает"
+      ],
       "needMention": false,
-      "exactMatch": true
-    },
-    {
-      "trigger": "доброе утречко",
-      "response": "соси",
-      "needMention": false,
-      "exactMatch": true
-    },
-    {
-      "trigger": "с добрым утром",
-      "response": "биба и боба",
-      "needMention": false,
-      "exactMatch": true
-    },
-    {
-      "trigger": "утречка",
-      "response": "додик ты утренний",
-      "needMention": false,
-      "exactMatch": true
-    },
-    {
-      "trigger": "доброе утро всем",
-      "response": "добрым утро не бывает",
-      "needMention": false,
-      "exactMatch": true
-    },
-    {
-      "trigger": "всем доброе утро",
-      "response": "миру мир а тебе хуй в рот",
-      "needMention": false,
-      "exactMatch": true
+      "exactMatch": false,
+      "randomResponse": true
     },
     {
       "trigger": "нароод",
-      "response": "хуй те в рот",
+      "responses": ["хуй те в рот", "че орешь", "заткнись"],
       "needMention": false,
-      "exactMatch": true
+      "exactMatch": true,
+      "randomResponse": true
     },
     {
       "trigger": "наррод",
-      "response": "2 хуя те в рот",
+      "responses": ["2 хуя те в рот", "наррод в пизду", "заебали"],
       "needMention": false,
-      "exactMatch": true
+      "exactMatch": true,
+      "randomResponse": true
     },
     {
       "trigger": "народ",
-      "response": "3 хуя те в рот",
+      "responses": ["3 хуя те в рот", "какой народ", "народ дома сиди"],
       "needMention": false,
-      "exactMatch": true
+      "exactMatch": true,
+      "randomResponse": true
     },
     {
       "trigger": "как дела",
-      "response": "У Жопселя всё отлично! А у вас? 🐶",
+      "responses": [
+        "У Жопселя всё отлично! А у вас? 🐶",
+        "нормально, а ты чё?",
+        "без тебя лучше",
+        "отвали со своими делами"
+      ],
       "needMention": true,
-      "exactMatch": true
+      "exactMatch": true,
+      "randomResponse": true
     },
     {
       "trigger": "спокойной ночи",
-      "response": "сьебись уже",
+      "responses": ["сьебись уже", "иди в жопу", "спать не даёшь", "ночи хуй"],
       "needMention": false,
-      "exactMatch": true
+      "exactMatch": true,
+      "randomResponse": true
     },
     {
       "trigger": "молодец",
-      "response": "ясен хуй",
+      "responses": ["ясен хуй", "сам молодец", "руки не отбил?", "похер"],
       "needMention": false,
-      "exactMatch": false
+      "exactMatch": false,
+      "randomResponse": true
     },
     {
       "trigger": "кто тут",
-      "response": "Жопсель тут",
+      "responses": ["Жопсель тут", "твой папа", "хозяин чата", "а ты кто?"],
       "needMention": false,
-      "exactMatch": false
+      "exactMatch": false,
+      "randomResponse": true
     },
     {
       "trigger": "илья",
-      "response": "ростом в три хуя",
+      "responses": ["ростом в три хуя", "илья хуилья", "иди нахуй Илья"],
       "needMention": false,
-      "exactMatch": true
+      "exactMatch": true,
+      "randomResponse": true
     },
     {
       "trigger": "даша",
-      "response": "дохуя наша",
+      "responses": ["дохуя наша", "даша пизда", "даша ебашь"],
       "needMention": false,
-      "exactMatch": true
+      "exactMatch": true,
+      "randomResponse": true
     },
     {
       "trigger": "воздухан",
-      "response": "Воздухан твой батя",
+      "responses": ["Воздухан твой батя", "какой воздухан", "воздух лови"],
       "needMention": false,
-      "exactMatch": true
+      "exactMatch": true,
+      "randomResponse": true
     },
     {
       "trigger": "соси",
-      "response": "а ты научи сосать",
+      "responses": [
+        "а ты научи сосать",
+        "сам соси",
+        "тебе не надоело",
+        "на отъебись"
+      ],
       "needMention": false,
-      "exactMatch": false
+      "exactMatch": false,
+      "randomResponse": true
     },
     {
       "trigger": "сучка",
-      "response": "сучка в постели будешь кричать",
+      "responses": [
+        "сучка в постели будешь кричать",
+        "сама сучка",
+        "у тебя мама сучка"
+      ],
       "needMention": false,
-      "exactMatch": false
+      "exactMatch": false,
+      "randomResponse": true
     },
     {
       "trigger": "домой",
-      "response": "блять ты ж бездомное, чудо",
+      "responses": [
+        "блять ты ж бездомное чудо",
+        "иди домой бомж",
+        "у тебя дома нет"
+      ],
       "needMention": false,
-      "exactMatch": false
+      "exactMatch": false,
+      "randomResponse": true
     },
     {
       "trigger": "поел",
-      "response": "говна?",
+      "responses": ["говна?", "а че не с кашей?", "нажрался"],
       "needMention": false,
-      "exactMatch": false
+      "exactMatch": false,
+      "randomResponse": true
     },
     {
       "trigger": "наелся",
-      "response": "говна?",
+      "responses": ["говна?", "обожрался", "поздравляю"],
       "needMention": false,
-      "exactMatch": false
+      "exactMatch": false,
+      "randomResponse": true
     },
     {
       "trigger": "наелась",
-      "response": "говна?",
+      "responses": ["говна?", "обожралась", "молодец"],
       "needMention": false,
-      "exactMatch": false
+      "exactMatch": false,
+      "randomResponse": true
     },
     {
       "trigger": "похуй",
-      "response": "ой попизди мне тут, когда давали выбирать, ты выбрало в жопу раз",
+      "responses": [
+        "ой попизди мне тут, когда давали выбирать, ты выбрало в жопу раз",
+        "и мне похуй",
+        "заебал"
+      ],
       "needMention": false,
-      "exactMatch": false
+      "exactMatch": false,
+      "randomResponse": true
     },
     {
       "trigger": "первый",
-      "response": "первый не последний, соси сразу два",
+      "responses": [
+        "первый не последний, соси сразу два",
+        "ладно петух",
+        "первый хуй"
+      ],
       "needMention": false,
-      "exactMatch": false
+      "exactMatch": false,
+      "randomResponse": true
     },
     {
       "trigger": "плохо",
-      "response": "плохо когда сын на соседа похож",
+      "responses": [
+        "плохо когда сын на соседа похож",
+        "плохо тебе?",
+        "а мне насрать"
+      ],
       "needMention": false,
-      "exactMatch": false
+      "exactMatch": false,
+      "randomResponse": true
     },
     {
       "trigger": "лиза",
       "responses": [
         "это та которая с сиськами?",
         "сиськастая?",
-        "подожди подожди подожди, это с бидонами?",
-        "че вы доебались к елизольдовне нашей",
-        "лиза извини                сь"
+        "подожди подожди, это с бидонами?",
+        "че вы доебались к нашей елизольдовне",
+        "лиза извини сь"
       ],
       "needMention": false,
       "exactMatch": false,
@@ -171,63 +201,97 @@
     },
     {
       "trigger": "душно",
-      "response": "дущно когда ты в чате еблан",
+      "responses": ["душно когда ты в чате еблан", "открой окно", "проветрись"],
       "needMention": false,
-      "exactMatch": false
+      "exactMatch": false,
+      "randomResponse": true
     },
     {
       "trigger": "мои",
-      "response": "рабу слова не давали",
+      "responses": ["рабу слова не давали", "твои что?", "завали"],
       "needMention": false,
-      "exactMatch": false
+      "exactMatch": false,
+      "randomResponse": true
     },
     {
       "trigger": "приезжай",
-      "response": "ооой блять сиди уже не вылезай",
+      "responses": [
+        "ооой блять сиди уже не вылезай",
+        "сам приезжай",
+        "не выебу й"
+      ],
       "needMention": false,
-      "exactMatch": false
+      "exactMatch": false,
+      "randomResponse": true
     },
     {
       "trigger": "нет",
-      "response": "говна пакет",
+      "responses": ["говна пакет", "да", "сам нет"],
       "needMention": false,
-      "exactMatch": false
+      "exactMatch": false,
+      "randomResponse": true
     },
     {
       "trigger": "евгений",
-      "response": "нахуя ты добавила эти две буквы в начале блять, просто Гений, филантроп, милиардер, иди нахуй в общем",
+      "responses": [
+        "нахуя ты добавил эти две буквы в начале блять, просто Гений, филантроп, милиардер, иди нахуй в общем",
+        "просто гений",
+        "звизда"
+      ],
       "needMention": false,
-      "exactMatch": false
+      "exactMatch": false,
+      "randomResponse": true
     },
     {
       "trigger": "женя",
-      "response": "у тебя две жизни или что нахуй? сейчас останется оплатить только комуналку",
+      "responses": [
+        "у тебя две жизни или что нахуй? сейчас останется оплатить только комуналку",
+        "женя хуеня",
+        "отдастся за печеньку"
+      ],
       "needMention": false,
-      "exactMatch": false
+      "exactMatch": false,
+      "randomResponse": true
     },
     {
       "trigger": "диана",
-      "response": "что диана блять, бабки верните ей за посиделки",
+      "responses": [
+        "что диана блять, бабки верните ей за посиделки",
+        "диана пиздана",
+        "верните бабки"
+      ],
       "needMention": false,
-      "exactMatch": false
+      "exactMatch": false,
+      "randomResponse": true
     },
     {
       "trigger": "влад",
-      "response": "влат пора пивка то уебат",
+      "responses": ["владу пора пивка то уебать", "влад хуесос", "пивасик"],
       "needMention": false,
-      "exactMatch": false
+      "exactMatch": false,
+      "randomResponse": true
     },
     {
       "trigger": "тема",
-      "response": "важно чтобы всегда мы оставались мыми,а они оними",
+      "responses": [
+        "важно чтобы всегда мы оставались мыми, а они оними",
+        "тема хуема",
+        "завали тему"
+      ],
       "needMention": true,
-      "exactMatch": true
+      "exactMatch": true,
+      "randomResponse": true
     },
     {
       "trigger": "ирис",
-      "response": "дрисня ирисня в прошлом, © Виктор тайлер дерден",
+      "responses": [
+        "дрисня ирисня в прошлом, © Виктор тайлер дерден",
+        "ирис говно",
+        "иди в жопу"
+      ],
       "needMention": false,
-      "exactMatch": false
+      "exactMatch": false,
+      "randomResponse": true
     },
     {
       "trigger": "женька",

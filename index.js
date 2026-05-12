@@ -13,217 +13,388 @@ try {
   process.exit(1);
 }
 
+// ========== ПОДКЛЮЧЕНИЕ МОДУЛЕЙ ==========
+const { cleanMention } = require("./modules/utils");
+const admin = require("./modules/admin");
+const commands = require("./modules/commands");
+const learning = require("./modules/learning");
+const rps = require("./modules/games/rps");
+const poll = require("./modules/games/poll");
+const roulette = require("./modules/games/roulette");
+const coin = require("./modules/games/coin");
+const dice = require("./modules/games/dice");
+const oracle = require("./modules/games/oracle");
+const swear = require("./modules/swear");
+const quotes = require("./modules/quotes");
+const reminders = require("./modules/reminders");
+const randomSound = require("./modules/random");
+const insults = require("./modules/insults");
+const excuses = require("./modules/excuses");
+const alcohol = require("./modules/alcohol");
+const fuckoff = require("./modules/fuckoff");
+const sarcasm = require("./modules/sarcasm");
+
+// ========== ИНИЦИАЛИЗАЦИЯ ==========
 const TOKEN = config.botToken;
 const PORT = process.env.PORT || 3000;
-const ADMIN_ID = config.adminId;
 
 const bot = new TelegramBot(TOKEN, { webHook: { autoOpen: false } });
 const app = express();
 app.use(express.json());
 
-// ========== РАНДОМНЫЕ ОТВЕТЫ ДЛЯ РАЗНЫХ ПОЛЬЗОВАТЕЛЕЙ ==========
-const adminResponses = [
-  "да, хозяин 👑",
-  "да, мой господин 🐶",
-  "да, мой повелитель 👑",
-  "да, создатель 🎯",
-  "слушаюсь, хозяин 🫡",
-  "чего изволите, господин? 🐶",
-  "я здесь, повелитель 👑",
-  "что прикажете, создатель? 🎯",
-];
+// Инициализация модулей
+admin.initAdmin(config.adminId);
+const learnedCommands = learning.loadLearnedCommands();
+commands.initCommands(config, learnedCommands);
+rps.loadGameStats();
+poll.loadPollsHistory();
+roulette.loadStats();
+swear.loadStats();
+quotes.loadQuotes();
+reminders.loadReminders();
 
-const userResponses = [
-  "лох педальный, чё надо? 🖕",
-  "чё доебался? 🖕",
-  "нахуй ты меня трогаешь? 🖕",
-  "отвали, чмо 🖕",
-  "руки убрал, петушара 🖕",
-  "иди нахуй 🖕",
-  "че надо, быдло? 🖕",
-  "не трогай меня, дебил 🖕",
-];
-
-function getRandomResponse(isAdmin) {
-  const responses = isAdmin ? adminResponses : userResponses;
-  return responses[Math.floor(Math.random() * responses.length)];
-}
-
-let learnedCommands = [];
-const LEARNED_FILE = "learned_commands.json";
-
-function isAdmin(userId) {
-  return userId === ADMIN_ID;
-}
-
-function loadLearnedCommands() {
-  try {
-    if (fs.existsSync(LEARNED_FILE)) {
-      const data = fs.readFileSync(LEARNED_FILE, "utf8");
-      learnedCommands = JSON.parse(data);
-      console.log(`📚 Загружено ${learnedCommands.length} выученных команд`);
-    }
-  } catch (error) {
-    console.error("Ошибка загрузки learned:", error);
+// ========== ЗАПУСК НАПОМИНАНИЙ ==========
+setInterval(async () => {
+  const dueReminders = reminders.getDueReminders();
+  for (const reminder of dueReminders) {
+    try {
+      await bot.sendMessage(
+        reminder.chatId,
+        `⏰ *НАПОМИНАНИЕ!*\n\n${reminder.message}\n\nЛох, ты просил напомнить! 🖕`,
+        { parse_mode: "Markdown" },
+      );
+    } catch (e) {}
   }
-}
+}, 10000);
 
-function saveLearnedCommands() {
-  try {
-    fs.writeFileSync(LEARNED_FILE, JSON.stringify(learnedCommands, null, 2));
-    console.log(`💾 Сохранено ${learnedCommands.length} команд`);
-  } catch (error) {
-    console.error("Ошибка сохранения learned:", error);
-  }
-}
-
-function isBotMentioned(text) {
-  if (!text) return false;
-  const lowerText = text.toLowerCase();
-  if (lowerText.includes(config.botName)) return true;
-  for (const alias of config.nameAliases) {
-    if (lowerText.includes(alias)) return true;
-  }
-  return false;
-}
-
-function checkAllCommands(text) {
-  if (!text) return null;
-
-  let cleanText = text.toLowerCase().trim();
-  const botMentioned = isBotMentioned(text);
-
-  if (botMentioned) {
-    cleanText = cleanText.replace(config.botName, "").trim();
-    for (const alias of config.nameAliases) {
-      cleanText = cleanText.replace(alias, "").trim();
-    }
-    cleanText = cleanText.replace(/\s+/g, " ").trim();
-  }
-
-  const allCommands = [...config.commands, ...learnedCommands];
-  const sortedCommands = [...allCommands].sort(
-    (a, b) => b.trigger.length - a.trigger.length,
-  );
-
-  console.log(`\n🔍 Оригинал: "${text}"`);
-  console.log(`🔍 Очищенный: "${cleanText}"`);
-  console.log(`🔍 Упоминание: ${botMentioned}`);
-
-  for (const cmd of sortedCommands) {
-    let matched = false;
-
-    if (cmd.exactMatch !== false) {
-      if (cleanText === cmd.trigger) {
-        matched = true;
-        console.log(`  ✅ Точное совпадение: "${cmd.trigger}"`);
-      }
-    } else {
-      if (cleanText.includes(cmd.trigger)) {
-        matched = true;
-        console.log(`  ✅ Частичное совпадение: "${cmd.trigger}"`);
-      }
-    }
-
-    if (matched) {
-      if (cmd.needMention === true && !botMentioned) {
-        console.log(`  ❌ Нужно упоминание, но его нет`);
-        continue;
-      }
-
-      // Проверяем, есть ли массив responses
-      let response;
-      if (cmd.randomResponse && cmd.responses && Array.isArray(cmd.responses)) {
-        response =
-          cmd.responses[Math.floor(Math.random() * cmd.responses.length)];
-        console.log(`  🎲 Рандомный ответ: ${response}`);
-      } else {
-        response = cmd.response;
-      }
-
-      console.log(`  📢 ОТВЕТ: ${response}`);
-      return response;
-    }
-  }
-
-  return null;
-}
+// ========== ОСНОВНОЙ ОБРАБОТЧИК ==========
 async function handleMessage(msg) {
   const chatId = msg.chat.id;
   const userId = msg.from.id;
   const text = msg.text;
+
   if (!text) return;
 
   console.log(`\n📨 [${userId}] ${text}`);
+  console.log(
+    `👤 Статус: ${admin.isMainAdmin(userId) ? "ГЛАВНЫЙ АДМИН" : admin.getSubAdminGroup(userId) ? `ПОД-АДМИН (${admin.getSubAdminGroup(userId)})` : "ПОЛЬЗОВАТЕЛЬ"}`,
+  );
 
-  // ОБУЧЕНИЕ
-  if (text.toLowerCase().includes("запомни:")) {
-    if (!isAdmin(userId)) {
-      await bot.sendMessage(chatId, "❌ Только хозяин может меня учить!");
+  // ========== СЧЕТЧИК МАТА ==========
+  const swearResult = swear.checkSwear(text, userId, msg.from.first_name);
+  if (swearResult.counted && swearResult.count > 0) {
+    console.log(`🤬 Заматерился на ${swearResult.count} слов`);
+  }
+
+  // ========== НАПОМИНАНИЯ ==========
+  const reminderData = reminders.parseReminder(text);
+  if (reminderData) {
+    if (!admin.isAnyAdmin(userId)) {
+      await bot.sendMessage(
+        chatId,
+        "❌ Только админы могут ставить напоминания, быдло!",
+      );
       return;
     }
 
-    const parts = text.split("->");
-    if (parts.length === 2) {
-      let triggerPart = parts[0].replace(/запомни:/i, "").trim();
-      let response = parts[1].trim();
-      let needMention = false;
-      let exactMatch = true;
-
-      if (triggerPart.toLowerCase().includes(config.botName)) {
-        triggerPart = triggerPart
-          .toLowerCase()
-          .replace(config.botName, "")
-          .trim();
-      }
-
-      const lowerText = text.toLowerCase();
-      if (lowerText.includes("с именем")) {
-        needMention = true;
-        response = response.replace(/с именем/gi, "").trim();
-      }
-      if (lowerText.includes("частично")) {
-        exactMatch = false;
-        response = response.replace(/частично/gi, "").trim();
-      }
-
-      const trigger = triggerPart.toLowerCase();
-
-      if (trigger && response) {
-        const existingIndex = learnedCommands.findIndex(
-          (c) => c.trigger === trigger,
-        );
-        if (existingIndex !== -1) {
-          learnedCommands[existingIndex] = {
-            trigger,
-            response,
-            needMention,
-            exactMatch,
-          };
-        } else {
-          learnedCommands.push({ trigger, response, needMention, exactMatch });
-        }
-        saveLearnedCommands();
-
-        const flagsText = needMention ? "с именем" : "без имени";
-        await bot.sendMessage(
-          chatId,
-          `✅ Запомнил! "${trigger}" → "${response}" (${flagsText})`,
-        );
-        return;
-      }
-    }
+    const reminder = reminders.addReminder(
+      userId,
+      chatId,
+      reminderData.delay,
+      reminderData.message,
+    );
+    const minutes = Math.round(reminderData.delay / 60000);
     await bot.sendMessage(
       chatId,
-      "❌ Формат: запомни: фраза -> ответ\nФлаги: 'с именем' или 'частично'",
+      `⏰ *Напомню через ${minutes} мин*\n\n📝 "${reminderData.message}"`,
+      { parse_mode: "Markdown" },
     );
     return;
   }
 
-  // УДАЛЕНИЕ
+  // ========== ЦИТАТНИК ==========
+  if (
+    text.toLowerCase() === "жопсель цитата" ||
+    text.toLowerCase() === "жопсель рандомная цитата"
+  ) {
+    const quote = quotes.getRandomQuote(chatId);
+    if (quote) {
+      await bot.sendMessage(
+        chatId,
+        `📝 *ЦИТАТНИК*\n\n"${quote.text}"\n\n— ${quote.authorName} (${new Date(quote.date).toLocaleString()})`,
+        { parse_mode: "Markdown" },
+      );
+    } else {
+      await bot.sendMessage(
+        chatId,
+        "📭 Нет цитат! Добавь: *жопсель добавь цитату: текст*",
+        { parse_mode: "Markdown" },
+      );
+    }
+    return;
+  }
+
+  if (text.toLowerCase().startsWith("жопсель добавь цитату:")) {
+    const quoteText = text.replace(/жопсель добавь цитату:/i, "").trim();
+    if (quoteText) {
+      quotes.addQuote(quoteText, userId, msg.from.first_name, chatId);
+      await bot.sendMessage(chatId, `✅ Цитата добавлена!\n\n"${quoteText}"`);
+    } else {
+      await bot.sendMessage(chatId, "❌ Напиши: жопсель добавь цитату: текст");
+    }
+    return;
+  }
+
+  if (text.toLowerCase() === "жопсель топ мата") {
+    const top = swear.getTopSwearers();
+    await bot.sendMessage(chatId, top, { parse_mode: "Markdown" });
+    return;
+  }
+
+  // ========== ОПРОСЫ ==========
+  const pollData = poll.parsePollCommand(text, userId);
+  if (pollData) {
+    if (!admin.isAnyAdmin(userId)) {
+      await bot.sendMessage(
+        chatId,
+        "❌ Только админы могут создавать опросы, быдло!",
+      );
+      return;
+    }
+
+    const created = await poll.createPoll(
+      bot,
+      chatId,
+      userId,
+      pollData.question,
+    );
+    if (!created) {
+      await bot.sendMessage(
+        chatId,
+        "❌ Не удалось создать опрос. Попробуй позже, уёбище!",
+      );
+    }
+    return;
+  }
+
+  if (
+    text.toLowerCase() === "жопсель последний опрос" ||
+    text.toLowerCase() === "жопсель опросы"
+  ) {
+    await poll.showLastPoll(bot, chatId);
+    return;
+  }
+
+  // ========== ИГРЫ ==========
+  if (text.toLowerCase() === "жопсель рулетка") {
+    const result = roulette.play(userId);
+    await bot.sendMessage(chatId, result.message, { parse_mode: "Markdown" });
+    return;
+  }
+
+  if (text.toLowerCase() === "жопсель монетка") {
+    await bot.sendMessage(chatId, coin.flip(), { parse_mode: "Markdown" });
+    return;
+  }
+
+  if (text.toLowerCase() === "жопсель кубик") {
+    await bot.sendMessage(chatId, dice.roll(), { parse_mode: "Markdown" });
+    return;
+  }
+
+  if (text.toLowerCase().startsWith("жопсель шар:")) {
+    const question = text.replace(/жопсель шар:/i, "").trim();
+    if (question) {
+      await bot.sendMessage(chatId, oracle.ask(question), {
+        parse_mode: "Markdown",
+      });
+    } else {
+      await bot.sendMessage(
+        chatId,
+        "❓ Напиши: жопсель шар: я выиграю лотерею?",
+      );
+    }
+    return;
+  }
+
+  if (text.toLowerCase().includes("жопсель игра")) {
+    const response = rps.startGame(userId);
+    await bot.sendMessage(chatId, response);
+    return;
+  }
+
+  if (text.toLowerCase().includes("жопсель статистика")) {
+    const userName = msg.from.first_name || "Ты";
+    const response = rps.getStatsMessage(userId, userName);
+    await bot.sendMessage(chatId, response, { parse_mode: "Markdown" });
+    return;
+  }
+
+  if (rps.isGameActive(userId)) {
+    const result = rps.processMove(userId, text, msg.from.first_name);
+    if (result.error) {
+      await bot.sendMessage(chatId, result.message);
+    } else {
+      await bot.sendMessage(chatId, result.message, { parse_mode: "Markdown" });
+    }
+    return;
+  }
+
+  // ========== БЫДЛО-ФИШКИ ==========
+  if (text.toLowerCase().startsWith("жопсель оскорби")) {
+    const target = text
+      .replace(/жопсель оскорби/i, "")
+      .trim()
+      .replace("@", "");
+    if (target) {
+      await bot.sendMessage(chatId, insults.insult(target));
+    } else {
+      await bot.sendMessage(chatId, "❌ Напиши: жопсель оскорби @username");
+    }
+    return;
+  }
+
+  if (text.toLowerCase() === "жопсель отмазка") {
+    await bot.sendMessage(chatId, excuses.getExcuse(), {
+      parse_mode: "Markdown",
+    });
+    return;
+  }
+
+  if (text.toLowerCase().startsWith("жопсель промилле")) {
+    const match = text.match(
+      /жопсель промилле\s+(\d+)(?:\s+(\d+))?(?:\s+(\d+))?/i,
+    );
+    if (match) {
+      const beers = parseInt(match[1]);
+      const weight = match[2] ? parseInt(match[2]) : 80;
+      const hours = match[3] ? parseInt(match[3]) : 0;
+      await bot.sendMessage(chatId, alcohol.calculate(beers, weight, hours), {
+        parse_mode: "Markdown",
+      });
+    } else {
+      await bot.sendMessage(
+        chatId,
+        "❌ Формат: жопсель промилле [бутылок] [вес] [часов]\nПример: жопсель промилле 5 80 2",
+      );
+    }
+    return;
+  }
+
+  if (text.toLowerCase().startsWith("жопсель нахуй")) {
+    const target = text
+      .replace(/жопсель нахуй/i, "")
+      .trim()
+      .replace("@", "");
+    if (target) {
+      await bot.sendMessage(chatId, fuckoff.fuckoff(target));
+    } else {
+      await bot.sendMessage(chatId, "❌ Напиши: жопсель нахуй @username");
+    }
+    return;
+  }
+
+  if (text.toLowerCase().startsWith("жопсель сарказм:")) {
+    const targetText = text.replace(/жопсель сарказм:/i, "").trim();
+    if (targetText) {
+      await bot.sendMessage(chatId, sarcasm.sarcasm(targetText), {
+        parse_mode: "Markdown",
+      });
+    } else {
+      await bot.sendMessage(
+        chatId,
+        "❌ Напиши: жопсель сарказм: какой-то текст",
+      );
+    }
+    return;
+  }
+
+  if (
+    text.toLowerCase() === "жопсель войс" ||
+    text.toLowerCase() === "жопсель рандом звук"
+  ) {
+    const sound = randomSound.getRandomSound();
+    await bot.sendMessage(
+      chatId,
+      `🔊 *РАНДОМНЫЙ ЗВУК/СТИКЕР*\n\n${sound}\n\n(тык, скачай себе)`,
+      { parse_mode: "Markdown" },
+    );
+    return;
+  }
+
+  // ========== АДМИН-КОМАНДЫ ==========
+  if (text.match(/^жопсель\s+\+админ\s+(g[123])$/i)) {
+    const match = text.match(/^жопсель\s+\+админ\s+(g[123])$/i);
+    const group = match[1].toLowerCase();
+
+    if (msg.reply_to_message && msg.reply_to_message.from) {
+      const targetUserId = msg.reply_to_message.from.id;
+      await admin.addSubAdmin(msg, targetUserId, group, userId, bot);
+    } else {
+      await bot.sendMessage(
+        chatId,
+        "❌ Чтобы добавить админа, ответьте на сообщение пользователя и напишите:\nжопсель +админ g1\n\nГруппы: g1 (может добавлять), g2 (только чтение), g3 (минимальные права)",
+      );
+    }
+    return;
+  }
+
+  if (text.match(/^жопсель\s+-админ$/i)) {
+    if (msg.reply_to_message && msg.reply_to_message.from) {
+      const targetUserId = msg.reply_to_message.from.id;
+      await admin.removeSubAdmin(msg, targetUserId, userId, bot);
+    } else {
+      await bot.sendMessage(
+        chatId,
+        "❌ Чтобы удалить админа, ответьте на сообщение пользователя и напишите:\nжопсель -админ",
+      );
+    }
+    return;
+  }
+
+  if (text === "жопсель админы" || text === "админы жопселя") {
+    await admin.showAdminsList(msg, bot);
+    return;
+  }
+
+  // ========== ОБУЧЕНИЕ ==========
+  if (text.toLowerCase().includes("запомни:")) {
+    if (!admin.isAnyAdmin(userId)) {
+      await bot.sendMessage(chatId, "❌ Только админы могут учить меня!");
+      return;
+    }
+
+    const parsed = learning.parseLearnCommand(text, config.botName);
+    if (parsed) {
+      learning.addLearnedCommand(
+        parsed.trigger,
+        parsed.response,
+        parsed.needMention,
+        parsed.exactMatch,
+      );
+      commands.initCommands(config, learning.getLearnedCommands());
+      const flagsText = parsed.needMention ? "с именем" : "без имени";
+      await bot.sendMessage(
+        chatId,
+        `✅ Запомнил! "${parsed.trigger}" → "${parsed.response}" (${flagsText})`,
+      );
+    } else {
+      await bot.sendMessage(
+        chatId,
+        "❌ Формат: запомни: фраза -> ответ\nФлаги: 'с именем' или 'частично'",
+      );
+    }
+    return;
+  }
+
   if (text.toLowerCase().startsWith("забудь:")) {
-    if (!isAdmin(userId)) {
-      await bot.sendMessage(chatId, "❌ Только хозяин может удалять!");
+    const canDelete =
+      admin.isMainAdmin(userId) || admin.getSubAdminGroup(userId) === "g1";
+    if (!canDelete) {
+      await bot.sendMessage(
+        chatId,
+        "❌ Только главный админ и админы группы g1 могут удалять команды!",
+      );
       return;
     }
 
@@ -231,13 +402,9 @@ async function handleMessage(msg) {
       .replace(/забудь:/i, "")
       .trim()
       .toLowerCase();
-    const index = learnedCommands.findIndex(
-      (cmd) => cmd.trigger === triggerToRemove,
-    );
-
-    if (index !== -1) {
-      const removed = learnedCommands.splice(index, 1)[0];
-      saveLearnedCommands();
+    const removed = learning.removeLearnedCommand(triggerToRemove);
+    if (removed) {
+      commands.initCommands(config, learning.getLearnedCommands());
       await bot.sendMessage(chatId, `🗑️ Забыл "${removed.trigger}"`);
     } else {
       await bot.sendMessage(chatId, `❌ Не найдено "${triggerToRemove}"`);
@@ -245,13 +412,13 @@ async function handleMessage(msg) {
     return;
   }
 
-  // СПИСОК ВЫУЧЕННЫХ
   if (text === "мои команды" || text === "что я умею") {
-    if (learnedCommands.length === 0) {
+    const learned = learning.getLearnedCommands();
+    if (learned.length === 0) {
       await bot.sendMessage(chatId, "📭 Нет выученных команд");
       return;
     }
-    const list = learnedCommands
+    const list = learned
       .map((cmd, i) => {
         const flags = cmd.needMention ? "[с именем]" : "[без имени]";
         return `${i + 1}. "${cmd.trigger}" → ${cmd.response} ${flags}`;
@@ -261,40 +428,69 @@ async function handleMessage(msg) {
     return;
   }
 
-  // ПРОВЕРКА КОМАНД
-  const commandResponse = checkAllCommands(text);
+  // ========== ПРОВЕРКА КОМАНД ИЗ КОНФИГА ==========
+  const commandResponse = commands.checkAllCommands(text);
   if (commandResponse) {
     await bot.sendMessage(chatId, commandResponse);
     return;
   }
 
-  // ПОЗВАЛИ ПО ИМЕНИ (с разными ответами для админа и пользователей)
-  const cleanText = text.toLowerCase().trim();
+  // ========== ПОЗВАЛИ ПО ИМЕНИ ==========
+  const { cleanText } = cleanMention(text, config);
   if (cleanText === config.botName || cleanText === `${config.botName}?`) {
-    const response = getRandomResponse(isAdmin(userId));
+    const response = admin.getResponseForAdmin(userId);
     await bot.sendMessage(chatId, response);
     return;
   }
 
-  // СПИСОК ВСЕХ КОМАНД
+  // ========== СПИСОК ВСЕХ КОМАНД ==========
   if (cleanText.includes("список команд") || cleanText === "команды") {
     const totalBuiltin = config.commands.length;
-    const learnedCount = learnedCommands.length;
+    const learnedCount = learning.getLearnedCommands().length;
     await bot.sendMessage(
       chatId,
-      `📋 Команды:\n🏠 Встроенных: ${totalBuiltin}\n🎓 Выученных: ${learnedCount}\n\n💡 Учить: запомни: фраза -> ответ\n   Флаги: 'с именем' или 'частично'`,
+      `📋 *КОМАНДЫ ЖОПСЕЛЯ* 📋
+
+🎮 *ИГРЫ*
+• жопсель игра - камень-ножницы-бумага
+• жопсель рулетка - русская рулетка
+• жопсель монетка - орёл/решка
+• жопсель кубик - бросить кубик
+• жопсель шар: вопрос - магический шар
+
+🤬 *БЫДЛО-ФИШКИ*
+• жопсель оскорби @username
+• жопсель отмазка
+• жопсель промилле [бутылок] [вес] [часов]
+• жопсель нахуй @username
+• жопсель сарказм: текст
+
+📊 *ДРУГОЕ*
+• жопсель опрос: текст - создать опрос
+• жопсель статистика - статистика игр
+• жопсель топ мата - топ матершинников
+• жопсель цитата - рандомная цитата
+• жопсель добавь цитату: текст
+• жопсель напомни через [число] мин: текст
+
+💡 Учить: *запомни: фраза -> ответ*
+🏠 Встроенных команд: ${totalBuiltin}
+🎓 Выученных команд: ${learnedCount}`,
+      { parse_mode: "Markdown" },
     );
     return;
   }
 
-  // ОТВЕТ ПО УМОЛЧАНИЮ (с разными ответами для админа и пользователей)
-  if (isBotMentioned(text)) {
-    const response = getRandomResponse(isAdmin(userId));
+  // ========== ОТВЕТ ПО УМОЛЧАНИЮ ==========
+  const { botMentioned } = cleanMention(text, config);
+  if (botMentioned) {
+    const response = admin.getResponseForAdmin(userId);
     await bot.sendMessage(chatId, response);
     return;
   }
 }
 
+// ========== ЗАПУСК СЕРВЕРА ==========
 app.post(`/webhook/${TOKEN}`, (req, res) => {
   bot.processUpdate(req.body);
   res.sendStatus(200);
@@ -303,13 +499,17 @@ app.post(`/webhook/${TOKEN}`, (req, res) => {
 app.get("/", (req, res) => res.send("Жопсель бот работает"));
 
 app.listen(PORT, async () => {
-  loadLearnedCommands();
   console.log(`✅ Сервер на порту ${PORT}`);
-  console.log(`👑 Админ: ${ADMIN_ID}`);
+  console.log(`👑 Главный админ: ${config.adminId}`);
   const webhookUrl = `${process.env.RENDER_EXTERNAL_URL || "https://jopsel.onrender.com"}/webhook/${TOKEN}`;
   await bot.setWebHook(webhookUrl);
   console.log(`🔗 Вебхук: ${webhookUrl}`);
   console.log("🐶 Жопсель запущен!");
+  console.log("🎮 Загружены: рулетка, монетка, кубик, магический шар");
+  console.log(
+    "🤬 Загружены: счётчик мата, оскорблялка, отмазка, алко-калькулятор, послать нахуй, сарказм",
+  );
+  console.log("📝 Загружены: цитатник, напоминания");
 });
 
 bot.on("message", handleMessage);
