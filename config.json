@@ -1,5 +1,5 @@
 {
-  "botToken": "8299226870:AAEKmJUrga6Vf67BAxZctbrPGn2M9ToXOxc",
+  "botToken": "8998933036:AAGiKkYCR3WwGaiWTXqZWYwAEqV4tFn41AU",
   "adminId": 804419469,
   "botName": "жопсель",
   "nameAliases": ["жопсель", "жопселя", "жопселю", "жопселем", "жопселе"],
@@ -17,7 +17,9 @@
         "биба и боба",
         "додик ты утренний",
         "миру мир а тебе хуй в рот",
-        "добрым утро не бывает"
+        "добрым утро не бывает",
+        "твоё утро — говно",
+        "проснулся? зря"
       ],
       "needMention": false,
       "exactMatch": false,
@@ -34,7 +36,8 @@
         "биба и боба",
         "додик ты утренний",
         "миру мир а тебе хуй в рот",
-        "добрым утро не бывает"
+        "добрым утро не бывает",
+        "утра? утра ебала"
       ],
       "needMention": false,
       "exactMatch": false,
@@ -59,21 +62,39 @@
     },
     {
       "trigger": "нароод",
-      "responses": ["хуй те в рот", "че орешь", "заткнись"],
+      "responses": [
+        "хуй те в рот",
+        "че орешь",
+        "заткнись",
+        "народ в пизду",
+        "заебали"
+      ],
       "needMention": false,
       "exactMatch": true,
       "randomResponse": true
     },
     {
       "trigger": "наррод",
-      "responses": ["2 хуя те в рот", "наррод в пизду", "заебали"],
+      "responses": [
+        "2 хуя те в рот",
+        "наррод в пизду",
+        "заебали",
+        "рот закрой",
+        "ты главный? нет"
+      ],
       "needMention": false,
       "exactMatch": true,
       "randomResponse": true
     },
     {
       "trigger": "народ",
-      "responses": ["3 хуя те в рот", "какой народ", "народ дома сиди"],
+      "responses": [
+        "3 хуя те в рот",
+        "какой народ",
+        "народ дома сиди",
+        "тихо ебать",
+        "народ — хуй на ворот"
+      ],
       "needMention": false,
       "exactMatch": true,
       "randomResponse": true
@@ -84,7 +105,8 @@
         "У Жопселя всё отлично! А у вас? 🐶",
         "нормально, а ты чё?",
         "без тебя лучше",
-        "отвали со своими делами"
+        "отвали со своими делами",
+        "дела как сало — белое и вонючее"
       ],
       "needMention": true,
       "exactMatch": true,
@@ -92,42 +114,64 @@
     },
     {
       "trigger": "спокойной ночи",
-      "responses": ["сьебись уже", "иди в жопу", "спать не даёшь", "ночи хуй"],
+      "responses": [
+        "сьебись уже",
+        "иди в жопу",
+        "спать не даёшь",
+        "ночи хуй",
+        "спи, пока не пришли"
+      ],
       "needMention": false,
       "exactMatch": true,
       "randomResponse": true
     },
     {
       "trigger": "молодец",
-      "responses": ["ясен хуй", "сам молодец", "руки не отбил?", "похер"],
+      "responses": [
+        "ясен хуй",
+        "сам молодец",
+        "руки не отбил?",
+        "похер",
+        "молодец — хуй овце"
+      ],
       "needMention": false,
       "exactMatch": false,
       "randomResponse": true
     },
     {
       "trigger": "кто тут",
-      "responses": ["Жопсель тут", "твой папа", "хозяин чата", "а ты кто?"],
+      "responses": [
+        "Жопсель тут",
+        "твой папа",
+        "хозяин чата",
+        "а ты кто?",
+        "главный тут — я, а ты никто"
+      ],
       "needMention": false,
       "exactMatch": false,
       "randomResponse": true
     },
-    {
-      "trigger": "илья",
-      "responses": ["ростом в три хуя", "илья хуилья", "жопомоноколесо"],
-      "needMention": false,
-      "exactMatch": true,
-      "randomResponse": true
-    },
+
     {
       "trigger": "даша",
-      "responses": ["дохуя наша", "даш дашь?", "даш ебашь"],
+      "responses": [
+        "дохуя наша",
+        "даш дашь?",
+        "даш ебашь",
+        "даша — каша вонючая"
+      ],
       "needMention": false,
       "exactMatch": true,
       "randomResponse": true
     },
     {
       "trigger": "воздухан",
-      "responses": ["Воздухан твой батя", "какой воздухан", "воздух лови"],
+      "responses": [
+        "Воздухан твой батя",
+        "какой воздухан",
+        "воздух лови",
+        "воздухан — хуй с двух сторон"
+      ],
       "needMention": false,
       "exactMatch": true,
       "randomResponse": true
@@ -138,7 +182,8 @@
         "а ты научи сосать",
         "сам соси",
         "тебе не надоело",
-        "на отъебись"
+        "на отъебись",
+        "у тебя уже губы трубочкой"
       ],
       "needMention": false,
       "exactMatch": false,
@@ -149,7 +194,8 @@
       "responses": [
         "сучка в постели будешь кричать",
         "сама сучка",
-        "фу епта"
+        "фу епта",
+        "сука — не ругайся, а то сам станешь"
       ],
       "needMention": false,
       "exactMatch": false,
@@ -160,7 +206,8 @@
       "responses": [
         "блять ты ж бездомное чудо",
         "иди домой бомж",
-        "у тебя дома нет"
+        "у тебя дома нет",
+        "твой дом — помойка"
       ],
       "needMention": false,
       "exactMatch": false,
@@ -168,14 +215,19 @@
     },
     {
       "trigger": "поел",
-      "responses": ["говна?", "а че не с кашей?", "нажрался"],
+      "responses": [
+        "говна?",
+        "а че не с кашей?",
+        "нажрался",
+        "поел — поел и в жопу сел"
+      ],
       "needMention": false,
       "exactMatch": false,
       "randomResponse": true
     },
     {
       "trigger": "наелся",
-      "responses": ["говна?", "обожрался", "поздравляю"],
+      "responses": ["говна?", "обожрался", "поздравляю", "наелся — как свинья"],
       "needMention": false,
       "exactMatch": false,
       "randomResponse": true
@@ -192,7 +244,8 @@
       "responses": [
         "ой попизди мне тут, когда давали выбирать, ты выбрало в жопу раз",
         "и мне похуй",
-        "заебал"
+        "заебал",
+        "похуй — твоё второе имя"
       ],
       "needMention": false,
       "exactMatch": false,
@@ -203,7 +256,8 @@
       "responses": [
         "первый не последний, соси сразу два",
         "ладно петух",
-        "первый хуй"
+        "первый хуй",
+        "первый в очереди на хуй"
       ],
       "needMention": false,
       "exactMatch": false,
@@ -214,7 +268,8 @@
       "responses": [
         "плохо когда сын на соседа похож",
         "плохо тебе?",
-        "а мне насрать"
+        "а мне насрать",
+        "плохо — это твой стандарт"
       ],
       "needMention": false,
       "exactMatch": false,
@@ -227,7 +282,8 @@
         "сиськастая?",
         "подожди подожди, это с бидонами?",
         "че вы доебались к нашей елизольдовне",
-        "лиза извини сь"
+        "лиза извини сь",
+        "лиза — сосиска с волосами"
       ],
       "needMention": false,
       "exactMatch": false,
@@ -235,14 +291,24 @@
     },
     {
       "trigger": "душно",
-      "responses": ["душно когда ты в чате еблан", "открой окно", "проветрись"],
+      "responses": [
+        "душно когда ты в чате еблан",
+        "открой окно",
+        "проветрись",
+        "душно от твоего юмора"
+      ],
       "needMention": false,
       "exactMatch": false,
       "randomResponse": true
     },
     {
       "trigger": "мои",
-      "responses": ["рабу слова не давали", "твои что?", "завали"],
+      "responses": [
+        "рабу слова не давали",
+        "твои что?",
+        "завали",
+        "твои — это хуй на мандарине"
+      ],
       "needMention": false,
       "exactMatch": false,
       "randomResponse": true
@@ -252,7 +318,8 @@
       "responses": [
         "ооой блять сиди уже не вылезай",
         "сам приезжай",
-        "не выебу й"
+        "не выебу й",
+        "приеду — лицо поменяешь"
       ],
       "needMention": false,
       "exactMatch": false,
@@ -260,47 +327,27 @@
     },
     {
       "trigger": "нет",
-      "responses": ["говна пакет", "да", "сам нет"],
+      "responses": ["говна пакет", "да", "сам нет", "нет — это да, но в жопу"],
       "needMention": false,
       "exactMatch": false,
       "randomResponse": true
     },
-    {
-      "trigger": "евгений",
-      "responses": [
-        "нахуя ты добавил эти две буквы в начале блять, просто Гений, филантроп, милиардер, иди нахуй в общем",
-        "просто гений",
-        "звизда"
-      ],
-      "needMention": false,
-      "exactMatch": false,
-      "randomResponse": true
-    },
-    {
-      "trigger": "женя",
-      "responses": [
-        "у тебя две жизни или что нахуй? сейчас останется оплатить только комуналку",
-        "женя хуеня",
-        "отдастся за печеньку"
-      ],
-      "needMention": false,
-      "exactMatch": false,
-      "randomResponse": true
-    },
+
     {
       "trigger": "диана",
-      "responses": [
-        "что диана блять, бабки верните ей за посиделки",
-        "диана пиздана",
-        "верните бабки"
-      ],
+      "responses": ["диана путана", "верните бабки", "Диана — хуяна"],
       "needMention": false,
       "exactMatch": false,
       "randomResponse": true
     },
     {
       "trigger": "влад",
-      "responses": ["владу пора пивка то уебать", "влад хуесос", "пивасик"],
+      "responses": [
+        "владу пора пивка то уебать",
+        "влад хуесос",
+        "пивасик",
+        "Влад — говном заклад"
+      ],
       "needMention": false,
       "exactMatch": false,
       "randomResponse": true
@@ -310,7 +357,8 @@
       "responses": [
         "важно чтобы всегда мы оставались мыми, а они оними",
         "тема хуема",
-        "завали тему"
+        "завали тему",
+        "тема — говна берема"
       ],
       "needMention": true,
       "exactMatch": true,
@@ -321,7 +369,8 @@
       "responses": [
         "дрисня ирисня в прошлом, © Виктор тайлер дерден",
         "ирис говно",
-        "иди в жопу"
+        "иди в жопу",
+        "ирис — пердак куриц"
       ],
       "needMention": false,
       "exactMatch": false,
@@ -336,6 +385,213 @@
         "сутенер",
         "хуйня"
       ],
+      "needMention": false,
+      "exactMatch": false,
+      "randomResponse": true
+    },
+
+    {
+      "trigger": "бот",
+      "responses": [
+        "сам ты бот",
+        "я не бот, я Жопсель",
+        "отъебись от робота",
+        "бот — твой папа"
+      ],
+      "needMention": false,
+      "exactMatch": true,
+      "randomResponse": true
+    },
+    {
+      "trigger": "погода",
+      "responses": [
+        "на улице хуёво",
+        "погода как у тебя в голове — сыро и пусто",
+        "солнце? не, не слышал"
+      ],
+      "needMention": false,
+      "exactMatch": false,
+      "randomResponse": true
+    },
+    {
+      "trigger": "умник",
+      "responses": [
+        "умник — хуй в сметане",
+        "я не умник, я гений говна",
+        "умник нашелся, ебать"
+      ],
+      "needMention": false,
+      "exactMatch": false,
+      "randomResponse": true
+    },
+    {
+      "trigger": "тупой",
+      "responses": [
+        "тупой как валенок",
+        "тупой — это твое амплуа",
+        "в зеркало смотрел?"
+      ],
+      "needMention": false,
+      "exactMatch": false,
+      "randomResponse": true
+    },
+    {
+      "trigger": "работа",
+      "responses": [
+        "работа не волк — говно не унесет",
+        "твоя работа — хуй пинать",
+        "работу нашел? иди копай"
+      ],
+      "needMention": false,
+      "exactMatch": false,
+      "randomResponse": true
+    },
+    {
+      "trigger": "деньги",
+      "responses": [
+        "деньги — говно, а ты их коллекционируешь",
+        "откуда у тебя деньги? украл?",
+        "дай денег, Жопсель в казино хочет"
+      ],
+      "needMention": false,
+      "exactMatch": false,
+      "randomResponse": true
+    },
+    {
+      "trigger": "люблю",
+      "responses": [
+        "люблю — поел и в жопу сел",
+        "люби себя сам, уебан",
+        "любовь — это когда терпишь"
+      ],
+      "needMention": false,
+      "exactMatch": false,
+      "randomResponse": true
+    },
+    {
+      "trigger": "иди нахуй",
+      "responses": [
+        "сам иди, я тут главный",
+        "держи дверь с той стороны",
+        "нахуй — это к тебе, ты профи"
+      ],
+      "needMention": false,
+      "exactMatch": false,
+      "randomResponse": true
+    },
+    {
+      "trigger": "жрать",
+      "responses": [
+        "жри говно, оно не кончается",
+        "вон из чата жрать",
+        "жрать — не работать, успеешь"
+      ],
+      "needMention": false,
+      "exactMatch": false,
+      "randomResponse": true
+    },
+    {
+      "trigger": "пиво",
+      "responses": [
+        "пиво — это жизнь, а ты говно",
+        "неси пиво Жопселю",
+        "пиво без тебя вкуснее"
+      ],
+      "needMention": false,
+      "exactMatch": false,
+      "randomResponse": true
+    },
+    {
+      "trigger": "спать",
+      "responses": [
+        "спи, пока лицо не отлежал",
+        "спать — это святое, отъебись",
+        "иди спать, завтра нахуй пойдешь"
+      ],
+      "needMention": false,
+      "exactMatch": false,
+      "randomResponse": true
+    },
+    {
+      "trigger": "кто ты",
+      "responses": [
+        "я твой влажный сон",
+        "Жопсель — повелитель дерьма",
+        "я тот, кто выебет твой чат"
+      ],
+      "needMention": false,
+      "exactMatch": true,
+      "randomResponse": true
+    },
+    {
+      "trigger": "помощь",
+      "responses": [
+        "помощь только за хуй",
+        "помоги себе сам, ебать",
+        "надо было не писать сюда"
+      ],
+      "needMention": false,
+      "exactMatch": true,
+      "randomResponse": true
+    },
+    {
+      "trigger": "смешно",
+      "responses": [
+        "смешно когда ты плачешь",
+        "твоя жизнь — анекдот",
+        "ржака, серьезно"
+      ],
+      "needMention": false,
+      "exactMatch": false,
+      "randomResponse": true
+    },
+    {
+      "trigger": "грустно",
+      "responses": [
+        "грустно — это когда у Жопселя нет хуя",
+        "а мне весело, пошёл нахуй",
+        "грусть — для слабаков"
+      ],
+      "needMention": false,
+      "exactMatch": false,
+      "randomResponse": true
+    },
+    {
+      "trigger": "ебать",
+      "responses": [
+        "ебать — не переебать",
+        "ебать ты красавчик, но нет",
+        "не выражайся, а то сам станешь"
+      ],
+      "needMention": false,
+      "exactMatch": false,
+      "randomResponse": true
+    },
+    {
+      "trigger": "скучно",
+      "responses": [
+        "скучно? пойди хуй намочи",
+        "Жопселю не скучно, а тебе пора",
+        "скука — это когда ты молчишь"
+      ],
+      "needMention": false,
+      "exactMatch": false,
+      "randomResponse": true
+    },
+    {
+      "trigger": "дота",
+      "responses": [
+        "го в жопу",
+        "дота — для даунов",
+        "иди нахуй со своей дотой"
+      ],
+      "needMention": false,
+      "exactMatch": false,
+      "randomResponse": true
+    },
+    {
+      "trigger": "сиськи",
+      "responses": ["какие бидоны", "лучше бы в пососал"],
       "needMention": false,
       "exactMatch": false,
       "randomResponse": true
