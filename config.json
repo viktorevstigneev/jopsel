@@ -276,20 +276,6 @@
       "randomResponse": true
     },
     {
-      "trigger": "лиза",
-      "responses": [
-        "это та которая с сиськами?",
-        "сиськастая?",
-        "подожди подожди, это с бидонами?",
-        "че вы доебались к нашей елизольдовне",
-        "лиза извини сь",
-        "лиза — сосиска с волосами"
-      ],
-      "needMention": false,
-      "exactMatch": false,
-      "randomResponse": true
-    },
-    {
       "trigger": "душно",
       "responses": [
         "душно когда ты в чате еблан",
@@ -332,34 +318,9 @@
       "exactMatch": false,
       "randomResponse": true
     },
-
-    {
-      "trigger": "диана",
-      "responses": ["диана путана", "верните бабки", "Диана — хуяна"],
-      "needMention": false,
-      "exactMatch": false,
-      "randomResponse": true
-    },
-    {
-      "trigger": "влад",
-      "responses": [
-        "владу пора пивка то уебать",
-        "влад хуесос",
-        "пивасик",
-        "Влад — говном заклад"
-      ],
-      "needMention": false,
-      "exactMatch": false,
-      "randomResponse": true
-    },
     {
       "trigger": "тема",
-      "responses": [
-        "важно чтобы всегда мы оставались мыми, а они оними",
-        "тема хуема",
-        "завали тему",
-        "тема — говна берема"
-      ],
+      "responses": ["важно чтобы всегда мы оставались мыми, а они оними"],
       "needMention": true,
       "exactMatch": true,
       "randomResponse": true
@@ -376,20 +337,6 @@
       "exactMatch": false,
       "randomResponse": true
     },
-    {
-      "trigger": "женька",
-      "responses": [
-        "хуе жменька",
-        "отдастся за печеньку",
-        "хуй совсем не карамелька",
-        "сутенер",
-        "хуйня"
-      ],
-      "needMention": false,
-      "exactMatch": false,
-      "randomResponse": true
-    },
-
     {
       "trigger": "бот",
       "responses": [
@@ -581,7 +528,7 @@
     {
       "trigger": "дота",
       "responses": [
-        "го в жопу",
+        "дотка в жопу сотка",
         "дота — для даунов",
         "иди нахуй со своей дотой"
       ],
